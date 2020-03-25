@@ -1,3 +1,11 @@
+/* ----------------------------------------------------------- */
+/* NAME : 羅芸岑                         User ID: xxxxxxxx */
+/* DUE DATE : mm/dd/yyyy                                       */
+/* PROGRAM ASSIGNMENT #                                        */
+/* FILE NAME : xxxx.yyyy.zzzz (your unix file name)            */
+/* PROGRAM PURPOSE :                                           */
+/*    A couple of lines describing your program briefly        */
+/* ----------------------------------------------------------- */
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
