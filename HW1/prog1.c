@@ -1,11 +1,15 @@
-/* ----------------------------------------------------------- */
-/* NAME : 羅芸岑                         User ID: xxxxxxxx */
-/* DUE DATE : mm/dd/yyyy                                       */
-/* PROGRAM ASSIGNMENT #                                        */
-/* FILE NAME : xxxx.yyyy.zzzz (your unix file name)            */
-/* PROGRAM PURPOSE :                                           */
-/*    A couple of lines describing your program briefly        */
-/* ----------------------------------------------------------- */
+/* -------------------------------------------------------*/
+/* NAME : 羅芸岑                      User ID: 108598056   */
+/* DUE DATE : 03/30/2020                                  */
+/* PROGRAM ASSIGNMENT #                                   */
+/* FILE NAME : prog1.c (your unix file name)              */
+/* PROGRAM PURPOSE :                                      */
+/*    Fork 4 child processes to solve the following jobs: */
+/*      (1)Fibonacci                                      */
+/*      (2)Buffon's Needle Problem                        */
+/*      (3)Ellipse Area Problem                           */
+/*      (4)Pinball Game                                   */
+/* -------------------------------------------------------*/
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +24,18 @@ double buffonsNeedle(int);
 int ellipseArea(int, int, int);
 void pinball(int, int);
 
+/* ----------------------------------------------------------- */
+/* FUNCTION  main :                                            */
+/*     Fork 4 child processes and wait until children finish   */
+/* PARAMETER USAGE :                                           */
+/*    - int argc      (argument count)                         */
+/*    - char* argv[]  (argument value)                         */
+/* FUNCTION CALLED :                                           */
+/*    - fibonacci(int)                                         */
+/*    - buffonsNeedle(int)                                     */
+/*    - ellipseArea(int, int, int)                             */
+/*    - pinball(int, int)                                      */
+/* ----------------------------------------------------------- */
 int main(int argc, char* argv[]) {
     int status;
     pid_t pid;
@@ -136,6 +152,14 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
+/* ----------------------------------------------------------- */
+/* FUNCTION  fibonacci :                                       */
+/*     to calcute and return the n-th Fibonacci number         */
+/* PARAMETER USAGE :                                           */
+/*    - n (specify the n-th Fibonacci number)                  */
+/* FUNCTION CALLED :                                           */
+/*    - fibonacci(int)                                         */
+/* ----------------------------------------------------------- */
 long fibonacci(int n) {
     long f1 = 1, f2 = 1;
     if (n == 0)
@@ -146,6 +170,14 @@ long fibonacci(int n) {
         return fibonacci(n - 1) + fibonacci(n - 2);
 }
 
+/* ----------------------------------------------------------- */
+/* FUNCTION  buffonsNeedle :                                   */
+/*     finds the solution of Buffon's needle problem           */
+/*      by throwing a needle r times                           */
+/* PARAMETER USAGE :                                           */
+/*    - r (specify throwing a needle r times)                  */
+/* FUNCTION CALLED : NONE                                      */
+/* ----------------------------------------------------------- */
 double buffonsNeedle(int r) {
     double PI = acos(-1.0);
     double d, a, G, L;
@@ -166,6 +198,15 @@ double buffonsNeedle(int r) {
     return count / (double)r;
 }
 
+/* ----------------------------------------------------------- */
+/* FUNCTION  ellipseArea :                                     */
+/*     to compute the area of an ellipse x2/a2 + y2/b2 = 1     */
+/* PARAMETER USAGE :                                           */
+/*    - a (specify the the length of semi-major axis)          */
+/*    - b (specify the the length of semi-minor axis)          */
+/*    - s (specify picking s points)                           */
+/* FUNCTION CALLED : NONE                                      */
+/* ----------------------------------------------------------- */
 int ellipseArea(int a, int b, int s) {
     double x, y;
     int count = 0;
@@ -183,6 +224,14 @@ int ellipseArea(int a, int b, int s) {
     return count;
 }
 
+/* ----------------------------------------------------------- */
+/* FUNCTION  pinball :                                         */
+/*     Simulates a simple pinball game                         */
+/* PARAMETER USAGE :                                           */
+/*    - x (specify x bins)                                     */
+/*    - y (specify y balls)                                    */
+/* FUNCTION CALLED : NONE                                      */
+/* ----------------------------------------------------------- */
 void pinball(int x, int y) {
     float odds;
     int temPinNo;
