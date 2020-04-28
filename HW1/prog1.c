@@ -37,9 +37,9 @@ void pinball(int, int);
 /*    - pinball(int, int)                                      */
 /* ----------------------------------------------------------- */
 int main(int argc, char* argv[]) {
-    int status;
+    int status; //for wait()
     pid_t pid;
-    char buf[100];
+    char buf[100]; //for standard output
     sprintf(buf, "Main Process Started\n");
     write(1, buf, strlen(buf));
     sprintf(buf, "Fibonacci Input            = %s\n", argv[1]);
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
         write(1, buf, strlen(buf));
         sprintf(buf, "   Fibonacci Process Started\n");
         write(1, buf, strlen(buf));
-        sprintf(buf, "   Input Number 10%d\n", atoi(argv[1]));
+        sprintf(buf, "   Input Number %d\n", atoi(argv[1]));
         write(1, buf, strlen(buf));
         sprintf(buf, "   Fibonacci Number f(10) is %ld\n", fibonacci(atoi(argv[1])));
         write(1, buf, strlen(buf));
@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
             write(1, buf, strlen(buf));
             sprintf(buf, "      Buffon's Needle Process Started\n");
             write(1, buf, strlen(buf));
-            sprintf(buf, "      Input Number 10%d\n", atoi(argv[2]));
+            sprintf(buf, "      Input Number %d\n", atoi(argv[2]));
             write(1, buf, strlen(buf));
             sprintf(buf, "      Estimated Probability is %.5f\n", buffonsNeedle(atoi(argv[2])));
             write(1, buf, strlen(buf));
@@ -187,7 +187,7 @@ double buffonsNeedle(int r) {
     srand(time(NULL));
 
     for (int i = 0; i < r; i++) {
-        //generate two random value, d & a
+        //generate two random values, d & a
         d = rand() / (RAND_MAX + 1.0);                     //[0,1)
         a = (2 * PI - 0) * rand() / (RAND_MAX + 1.0) + 0;  //[0,2*π)
         //see if the needle crosses a dividing line
@@ -214,7 +214,7 @@ int ellipseArea(int a, int b, int s) {
     srand(time(NULL));
 
     for (int i = 0; i < s; i++) {
-        //generate two random value, x & y
+        //generate two random values, x & y
         x = ((double)a - 0) * rand() / (RAND_MAX + 1.0) + 0;  //x, 0 ≤ x < a
         y = ((double)b - 0) * rand() / (RAND_MAX + 1.0) + 0;  //y, 0 ≤ y < b
         //see if (x,y) is in the given ellipse
@@ -254,7 +254,7 @@ void pinball(int x, int y) {
     for (int i = 0; i < y; i++) {
         temPinNo = 0;
         for (int j = 0; j < x - 1; j++) {
-            //generate a random value, odd
+            //generate a random value, odds
             odds = rand() / (RAND_MAX + 1.0);  //odds, [0,1)
             if (odds < 0.5) {                  //the ball goes left
 
@@ -266,12 +266,10 @@ void pinball(int x, int y) {
     }
     for (int i = 0; i < x; i++) {
         sprintf(buf, "%3d-(%7d)-(%5.2f)|", i + 1, *(pin + i), (*(pin + i) / (float)y) * 100);
-        write(1, buf, strlen(buf));
         for (float j = 0; j < (*(pin + i) / (float)y) * 100; j++) {
-            sprintf(buf, "*");
-            write(1, buf, strlen(buf));
+            sprintf(buf+strlen(buf), "*");
         }
-        sprintf(buf, "\n");
+        sprintf(buf+strlen(buf), "\n");
         write(1, buf, strlen(buf));
     }
     free(pin);

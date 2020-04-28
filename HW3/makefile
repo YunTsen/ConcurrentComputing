@@ -1,10 +1,10 @@
-CC       = c++ -Wfatal-errors
+CC       = c++
 FLAGS    = -no-pie
 CFLAGS   = -g -O2 -Wno-write-strings -Wno-cpp
 DFLAGS   = -DPACKAGE=\"threadsystem\" -DVERSION=\"1.0\" -DPTHREAD=1 -DUNIX_MSG_Q=1 -DSTDC_HEADERS=1
-IFLAGS   = -I/../ThreadMentor/include
-TMLIB    = ../ThreadMentor/Visual/libthreadclass.a
-TMLIB_NV    = ../ThreadMentor/NoVisual/libthreadclass.a
+IFLAGS   = -I/mnt/d/HW/ConcurrentComputing/ThreadMentor/include
+TMLIB    = /mnt/d/HW/ConcurrentComputing/ThreadMentor/Visual/libthreadclass.a
+TMLIB_NV    = /mnt/d/HW/ConcurrentComputing/ThreadMentor/NoVisual/libthreadclass.a
 
 OBJ_FILE = quicksort.o quicksort-main.o
 EXE_FILE = quicksort

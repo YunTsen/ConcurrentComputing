@@ -10,7 +10,7 @@
 #define _QUICKSORT_H
 
 // header file
-#include "../ThreadMentor/include/ThreadClass.h"
+#include "ThreadClass.h"
 
 //---------------------------------------------------------------//
 //  Process Thread Class: 

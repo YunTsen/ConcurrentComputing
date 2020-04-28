@@ -6,7 +6,6 @@
 
 #include <iostream>
 #include "quicksort.h"
-#include "../ThreadMentor/include/ThreadClass.h"
 
 //---------------------------------------------------------------//
 //  QuickSort Class: 
