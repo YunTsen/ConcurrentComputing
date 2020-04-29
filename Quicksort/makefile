@@ -1,4 +1,4 @@
-CC       = c++ -Wfatal-errors 
+CC       = c++
 FLAGS    = -no-pie
 CFLAGS   = -g -O2 -Wno-write-strings -Wno-cpp
 DFLAGS   = -DPACKAGE=\"threadsystem\" -DVERSION=\"1.0\" -DPTHREAD=1 -DUNIX_MSG_Q=1 -DSTDC_HEADERS=1
@@ -6,17 +6,17 @@ IFLAGS   = -I/home/user/Desktop/ThreadMentor/include
 TMLIB    = /home/user/Desktop/ThreadMentor/Visual/libthreadclass.a
 TMLIB_NV    = /home/user/Desktop/ThreadMentor/NoVisual/libthreadclass.a
 
-OBJ_FILE = thread.o thread-main.o
-EXE_FILE = prog3
+OBJ_FILE = quicksort.o quicksort-main.o
+EXE_FILE = quicksort
 
 ${EXE_FILE}: ${OBJ_FILE}
 	${CC} ${FLAGS}  -o ${EXE_FILE}  ${OBJ_FILE} ${TMLIB} -lpthread
 
-thread.o: thread.cpp
-	${CC} ${DFLAGS} ${IFLAGS} ${CFLAGS} -c thread.cpp
+quicksort.o: quicksort.cpp
+	${CC} ${DFLAGS} ${IFLAGS} ${CFLAGS} -c quicksort.cpp
 
-thread-main.o: thread-main.cpp
-	${CC} ${DFLAGS} ${IFLAGS} ${CFLAGS} -c thread-main.cpp
+quicksort-main.o: quicksort-main.cpp
+	${CC} ${DFLAGS} ${IFLAGS} ${CFLAGS} -c quicksort-main.cpp
 
 noVisual: ${OBJ_FILE}
 	${CC} ${FLAGS}  -o ${EXE_FILE}  ${OBJ_FILE} ${TMLIB_NV} -lpthread
@@ -24,5 +24,4 @@ noVisual: ${OBJ_FILE}
 clean:
 	rm -f ${OBJ_FILE} ${EXE_FILE}
 
-exe:
-	./prog3 < file.txt
+export PATH=/home/user/Desktop/ThreadMentor/bin:$PATH
