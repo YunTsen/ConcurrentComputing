@@ -4,11 +4,12 @@
 //    Class implemention file for the QuickSortThread class      //
 // ------------------------------------------------------------- //
 
-#include <cmath>
-#include <iostream>
+#include "thread.h"
+
 #include <string.h>
 
-#include "thread.h"
+#include <cmath>
+#include <iostream>
 
 using namespace std;
 
@@ -22,9 +23,6 @@ PrefixSumThread::PrefixSumThread(vector<vector<int>>* B, int stage, int index) :
     ThreadName << "Stage:"
                << _stage << ', Index:' << _index
                << '\0';
-    char buf[200];
-    sprintf(buf, "Stage: %d, Index: %d\n", _stage,_index);
-    write(1, buf, strlen(buf));          
 }
 
 //---------------------------------------------------------------//
@@ -37,20 +35,25 @@ void PrefixSumThread::ThreadFunc() {
 
     int n = (*_B)[0].size();
     int k = log(n);
-    int gap = pow(2,_stage-1);
+    int gap = pow(2, _stage - 1);
+    char buf[200];  //for standard output
 
-    
+    sprintf(buf, "     Thread %d Created\n", _index);
+    write(1, buf, strlen(buf));
 
-        if (_index < gap) { //B[0..gap-1] that need no calculation
-            (*_B)[_stage][_index] = (*_B)[_stage - 1][_index];
-        } else {            //B[gap..n] that need calculation
-            (*_B)[_stage][_index] = (*_B)[_stage - 1][_index] + (*_B)[_stage - 1][_index - gap];
-        }
+    if (_index < gap) {  //B[0..gap-1] that need no calculation
+        sprintf(buf, "     Thread %d copies x[%d]\n", _index, _index);
+        write(1, buf, strlen(buf));
+        (*_B)[_stage][_index] = (*_B)[_stage - 1][_index];
+    } else {  //B[gap..n] that need calculation
+        sprintf(buf, "     Thread %d computes x[%d] + x[%d]\n", _index, _index, _index - gap);
+        write(1, buf, strlen(buf));
+        (*_B)[_stage][_index] = (*_B)[_stage - 1][_index] + (*_B)[_stage - 1][_index - gap];
+    }
 
-        
-
-        Exit();
-    
+    sprintf(buf, "     Thread %d exits\n", _index);
+    write(1, buf, strlen(buf));
+    Exit();
 }
 
 // end of QuickSort.cpp

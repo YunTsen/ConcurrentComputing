@@ -2,9 +2,9 @@ CC       = c++ -Wfatal-errors
 FLAGS    = -no-pie
 CFLAGS   = -g -O2 -Wno-write-strings -Wno-cpp
 DFLAGS   = -DPACKAGE=\"threadsystem\" -DVERSION=\"1.0\" -DPTHREAD=1 -DUNIX_MSG_Q=1 -DSTDC_HEADERS=1
-IFLAGS   = -I/home/user/Desktop/ThreadMentor/include
-TMLIB    = /home/user/Desktop/ThreadMentor/Visual/libthreadclass.a
-TMLIB_NV    = /home/user/Desktop/ThreadMentor/NoVisual/libthreadclass.a
+IFLAGS   = -I../ThreadMentor/include
+TMLIB    = ../ThreadMentor/Visual/libthreadclass.a
+TMLIB_NV    = ../ThreadMentor/NoVisual/libthreadclass.a
 
 OBJ_FILE = thread.o thread-main.o
 EXE_FILE = prog3
@@ -26,3 +26,6 @@ clean:
 
 exe:
 	./prog3 < file.txt
+
+export:
+	export PATH=/mnt/d/Enya/ConcurrentComputing/ThreadMentor/bin:$PATH
