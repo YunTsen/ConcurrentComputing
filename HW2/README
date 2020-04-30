@@ -1,0 +1,58 @@
+Q1: The logic of your program?
+        Instead of sorting the whole array, I devide an array into half and 
+    sort each of the subarray seperately(devide and conquer). Which is,
+    1. tear an array apart until there are only two elements in the subarray.
+    2. Swap the elements in that array if it is not in order.
+    3. Then merge two subarrays back. After that, I get two sorted array.
+    4. Compare every element in one subarray with all other elements in the 
+        other subarray using modified binary search to find the correct index
+        to store the elemet.
+    5. Repeat 4. so that the subarrays merge back all way through.
+    6. Done.
+    
+Q2: Why does your program work?
+        That is because the spliting phase can be handle concurrently by two 
+    processes. So do the merging phase(by using extra space to store the
+    intermediate results). Therefore I fork (2^k-1+2^k-2+...+1) child processes 
+    for the splitting phase,  plus n*(k-1) child processes to merge. Also, I
+    create two shared memory space for the communication between parent and
+    child processes.
+
+Q3: Explain the allocation and use of each shared memory segment.
+    1. a[] for the communication between main.c and the child it creates to
+    execute merge.c. It stores the input array.
+    2. tem_a[] for the cmmunicatino between merge.c and its child processes 
+    that execute function "merge". It is used to store the intermiate results
+    during the merging phase.
+    
+Q4: Are there potential race conditions?
+        No. Because there are no two or more processes manipulating a shared
+    resource concurrently in my program.
+
+Q5: Why you should not save the assigned array entry back 
+    to the given array in the binary merge phase?
+        That is because the result would goes wrong if we do so.
+    For example, in the merging phase, given a[]={3,4,2,5}. If the process 
+    fork child for a[0], after binary search, it stores 3 to a[2] and get
+    a[]={3,4,3,5}. Apparently, "2" disappears. Then we get a wrong result.
+    
+Q6: Explain how you allocate a temporary array to hold the intermediate 
+    result each execution of Mergesort().
+        I create a shared memory space as large as the inupt array
+    before start merging and pass the pointer to that memory space to the 
+    function "merge". Everytimes a child process is created, 
+    it executes "merge" and store the value of the element at the 
+    correct index in that temproary array. After every element in two 
+    subarrays finishes "merging", store the value back to the original array
+    and start another round of "devide and conquer" until the last iteration.
+    
+Q7: Can you only create n processes at the beginning of the MERGE phase 
+    so that they can be used in each binary merge?
+        Yes. Create n processes to handle each particular element perspectively.
+    Every process should run log(n) times. Everytime the processes should
+    compare with the peer subarray to find the correct place in which the value
+    it takes care of would be stored. A process should wait for all other n-1
+    processes to did their jobs of finding a correct space and store the value.
+    After all processes are done, a next iteration starts. It takes log(n) 
+    iterations to finish the MERGE phase.
+        

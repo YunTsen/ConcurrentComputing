@@ -140,8 +140,8 @@ void mergeSort(int *a, int lower_bound, int upper_bound, int *tem_a) {
     int status; /*for wait()*/
     pid_t pid;
 
-    sprintf(buf, "   ### M-PROC(%ld) created by M-PROC(%ld): entering with a[%d..%d]\n", (long)getpid(), (long)getppid(), lower_bound, upper_bound);
-    sprintf(buf + strlen(buf), "   ");
+    sprintf(buf, "   ### M-PROC(%ld) created by M-PROC(%ld): entering with a[%d..%d]\n   ",
+            (long)getpid(), (long)getppid(), lower_bound, upper_bound);
     for (i = lower_bound; i <= upper_bound; i++) {
         sprintf(buf + strlen(buf), "%4d", a[i]);
     }
@@ -151,9 +151,16 @@ void mergeSort(int *a, int lower_bound, int upper_bound, int *tem_a) {
     if (upper_bound == lower_bound)
         return;
     else if (upper_bound - lower_bound == 1) {
-        if (a[lower_bound] > a[upper_bound])
+        if (a[lower_bound] > a[upper_bound]){
             swap(&a[lower_bound], &a[upper_bound]);
-
+        }
+        sprintf(buf,"   ### M-PROC(%ld) created by M-PROC(%ld): entering with a[%d..%d] -- sorted\n   ",
+        (long)getpid(),(long)getppid(),lower_bound,upper_bound);
+        for(i=lower_bound;i<=upper_bound;i++){
+            sprintf(buf+strlen(buf),"%4d",a[i]);
+        }
+        sprintf(buf+strlen(buf),"\n");
+        write(1, buf, strlen(buf));
         return;
     }
 
