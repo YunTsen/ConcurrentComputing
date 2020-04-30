@@ -1,1 +1,6 @@
                                                                             |
+Q1: Are there any race conditions in this prefix sum computation? Why?
+    No. Because there are no two or more processes manipulating a shared
+    resource concurrently in my program.
+    
+Q2: Prove that this algorithm does compute the prefix sum correctly.
