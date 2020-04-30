@@ -1,13 +1,26 @@
-#include <string.h>
-
+// ----------------------------------------------------------- 
+// NAME : YunTsen Lo                         User ID: 108598056 
+// DUE DATE : 05/04/2020                                       
+// PROGRAM ASSIGNMENT 3                                        
+// FILE NAME : thread-main.cpp        
+// PROGRAM PURPOSE :
+//   This program uses multithreaded programming to             
+//    implement the prefixSum algorithm
+// ----------------------------------------------------------- 
 #include <cmath>
 #include <iostream>
+#include <string.h>
 #include <vector>
 
 #include "thread.h"
 
 using namespace std;
-
+// ----------------------------------------------------------- 
+// FUNCTION main :                       
+//     Read input array, and do prefixSum using multhithreading                   
+// PARAMETER USAGE : NONE          
+// FUNCTION CALLED : NONE         
+// ----------------------------------------------------------- 
 int main() {
     int n, tem, k;
     char buf[200];  //for standard output
@@ -44,7 +57,7 @@ int main() {
     sprintf(buf + strlen(buf), "\n");
     write(1, buf, strlen(buf));
 
-    //start the prefixSum thread
+    //start the prefixSum threads
     for (int run = 1; run < k + 1; run++) {
         sprintf(buf, "Run %d:\n", run);
         write(1, buf, strlen(buf));
@@ -53,7 +66,7 @@ int main() {
             prefixSumThread[index]->Begin();
         }
         //wait for the prefixSum threads to finish
-        for (int index = 0; index < n; index++) {
+        for (int index = 0; index < n; index++) {//all elements
             prefixSumThread[index]->Join();
         }
         sprintf(buf, "Result after run %d:\n", run);
@@ -62,9 +75,8 @@ int main() {
         }
         sprintf(buf + strlen(buf), "\n");
         write(1, buf, strlen(buf));
-    }
+    }//Prefix Sum algo ends
 
-    
 
     sprintf(buf, "Final result after run %d:\n", k);
     for (int i = 0; i < n; i++) {

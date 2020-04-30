@@ -1,10 +1,13 @@
-// --------------------------------------------------------------//
-// File : quicksort.h                                            //
-//        head file for class QuickSortThread definition         //
-// PROGRAM DISCRIPTION                                           //
-//    This program use multithreaded programming to              //
-//    implement the quicksort algorithm                          //
-// ------------------------------------------------------------- //
+// ----------------------------------------------------------- 
+// NAME : YunTsen Lo                         User ID: 108598056 
+// DUE DATE : 05/04/2020                                       
+// PROGRAM ASSIGNMENT 3                                        
+// FILE NAME : thread.h        
+// PROGRAM PURPOSE :
+//    Head file for class QuickSortThread definition.                                         
+//    This program uses multithreaded programming to
+//  implement the Prefix Sum algorithm.
+// ----------------------------------------------------------- 
 
 #ifndef _THREAD_H
 #define _THREAD_H
@@ -12,11 +15,10 @@
 // header file
 #include "ThreadClass.h"
 
-//---------------------------------------------------------------//
-//  Process Thread Class: 
-//     each thread applies quicksort algorithm to divide the given
-//     array and sorts them recursively
-//---------------------------------------------------------------//
+//---------------------------------------------------------------
+//  PrefixSumThread Class: 
+//     each thread applies PrefixSum algorithm to compute B[stage,index]
+//---------------------------------------------------------------
 
 class PrefixSumThread : public Thread
 {
@@ -26,9 +28,10 @@ class PrefixSumThread : public Thread
 
      private:
           void ThreadFunc();  // thread body
-          vector<vector<int>>* _B;    // lower bound of the sub-array to be sorted
-          int _stage;    // upper bound of the sub-array to be sorted
-          int _index;
+          vector<vector<int>>* _B;      //array B[*,*] of k+1 rows and n columns
+                                        //to store the results of B[stage,index]
+          int _stage;    //which run
+          int _index;    //which element
 };
 
 #endif
