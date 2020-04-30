@@ -1,3 +1,4 @@
+
 CC       = c++ -Wfatal-errors 
 FLAGS    = -no-pie
 CFLAGS   = -g -O2 -Wno-write-strings -Wno-cpp
@@ -28,4 +29,4 @@ exe:
 	./prog3 < file.txt
 
 export:
-	export PATH=/mnt/d/Enya/ConcurrentComputing/ThreadMentor/bin:$PATH
+	export PATH=/home/user/Desktop/ThreadMentor/bin:$PATH

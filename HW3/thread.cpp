@@ -20,8 +20,8 @@ using namespace std;
 
 PrefixSumThread::PrefixSumThread(vector<vector<int>>* B, int stage, int index) : _B(B), _stage(stage), _index(index) {
     ThreadName.seekp(0, ios::beg);
-    ThreadName << "Stage:"
-               << _stage << ', Index:' << _index
+    ThreadName << '('
+               << stage << ',' << index <<')'
                << '\0';
 }
 
