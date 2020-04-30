@@ -52,6 +52,10 @@ int main() {
             prefixSumThread[index] = new PrefixSumThread(&B, run, index);
             prefixSumThread[index]->Begin();
         }
+        //wait for the prefixSum threads to finish
+        for (int index = 0; index < n; index++) {
+            prefixSumThread[index]->Join();
+        }
         sprintf(buf, "Result after run %d:\n", run);
         for (int i = 0; i < n; i++) {
             sprintf(buf + strlen(buf), "%4d", B[run][i]);
@@ -60,10 +64,7 @@ int main() {
         write(1, buf, strlen(buf));
     }
 
-    //wait for the prefixSum threads to finish
-    for (int index = 0; index < n; index++) {
-        prefixSumThread[index]->Join();
-    }
+    
 
     sprintf(buf, "Final result after run %d:\n", k);
     for (int i = 0; i < n; i++) {
