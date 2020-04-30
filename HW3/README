@@ -1,6 +1,24 @@
                                                                             |
 Q1: Are there any race conditions in this prefix sum computation? Why?
-    No. Because there are no two or more processes manipulating a shared
+        No. Since I prepare a new array to store the result after every run,
+    there are no two or more processes manipulating a shared
     resource concurrently in my program.
     
 Q2: Prove that this algorithm does compute the prefix sum correctly.
+
+Q3: Can the result of x[i]+x[i-2h-1] of run h be saved back to x[i]?
+        No. For example, suppose the input array is x[4]={4,3,5,9}. 
+    In the first run, if we store the result x[1] = x[0] + x[1] = 4 + 3 = 7
+    back to x[1]. Then x[2] will be x[1] + x[2] = 7 + 5 = 12, rather then
+    3 + 5 = 8, which is what we want. Therefore the result won't be correct.
+
+Q4: Can you just create n threads and let them do all the work without 
+    the use of a temporary array B[*,*]?
+        Yes. Create n threads to handle each particular element
+    perspectively. Every thread should run k = log2(n) times. A thread
+    requires two argument (Run,index), and do the following:
+        1. if index < 2^(run-1), copy B[run-1,index] to B[run,index]
+        2. else, B[run,index]=B[run-1,index] + B[run-1,index-2^(run-1)]
+        3. wait until all n threads finish (chage the flag when that happens)
+    After all n threads finish their work, add 1 to "run" and do the
+    next run until run < log2(n)
