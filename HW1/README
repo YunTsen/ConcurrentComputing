@@ -1,0 +1,119 @@
+Question 1:
+    There would be four processes, including the main process.
+    The following diagram shows the relations of all 4 processes.
+    (P1->P2->P3->P4)
+        
+        -------------------
+        | P1 (main)       |
+        |   i=1 , fork()  |
+        -------------------
+          /               \
+fork()>0 /                 \ fork()=0
+        /                   \
+     --------------------  --------------------
+     | P1 (main)        |  | P2(child of P1)  |
+     |   i=2 , break;   |  |    i=2, fork();  |
+     --------------------  --------------------
+                            /\
+                  fork()>0 /  \ fork()=0
+                          /    \
+         -----------------     -------------------
+         | P2            |     | P3(child of P2) |
+         |   i=3, break; |     |    i=3, fork(); |
+         -----------------     -------------------
+                                /\
+                      fork()>0 /  \ fork()=0
+                              /    \
+             -----------------     -------------------
+             | P3            |     | P4(child of P3) |
+             |   i=4         |     |    i=4          |
+             -----------------     -------------------
+
+Question 2:
+    There would be five processes, including the main process.
+    The following diagram shows the relations of all 4 processes.
+    (P1->P2,P3,P4,P5)
+
+                    -------------------
+                    | P1 (main)       |
+                    |   i=0 , fork()  |
+                    -------------------
+                       /               \
+             fork()>0 /                 \ fork()=0
+                     /                   \
+            --------------------  --------------------
+            | P1 (main)        |  | P2(child of P1)  |
+            |   i=1 , fork();  |  |    i=1, break;   |
+            --------------------  --------------------
+                            /\
+                  fork()>0 /  \ fork()=0
+                          /    \
+            -----------------     -------------------
+            | P1 (main)     |     | P3(child of P1) |
+            |   i=2, fork();|     |    i=2, break;  |
+            -----------------     -------------------
+                         /\
+               fork()>0 /  \ fork()=0
+                       /    \
+        -----------------     -------------------
+        | P1            |     | P4(child of P1) |
+        |   i=3, fork();|     |    i=3, break;  |
+        -----------------     -------------------
+                    /\
+          fork()>0 /  \ fork()=0
+                  /    \
+   -----------------    -------------------
+   | P1            |    | P5(child of P1) |
+   |   i=4         |    |    i=4          |
+   -----------------    -------------------
+
+Question 3:
+    here would be eight processes, including the main process.
+    The following diagram shows the relations of all 8 processes.
+    (P1->P2->P4->P8)
+    (P1->P2->P7)
+    (P1->P3->P6)
+    (P1->P5)
+                        -------------------
+                        | P1 (main)       |
+                        |   i=0 , fork()  |
+                        -------------------
+                          /               \
+                fork()>0 /                 \ fork()=0
+                        /                   \
+                --------------------       -------------------
+                | P1 (main)        |       | P2(child of P1) |
+                |   i=1 , fork();  |       |    i=1, fork(); |
+                --------------------       -------------------
+                    /\                                      /\
+          fork()>0 /  \ fork()=0                  fork()>0 /  \ fork()=0
+                  /    \                                  /    \
+ -----------------    -------------------   ------------------  ------------------
+ | P1 (main)     |    | P3(child of P1) |   | P2(child of P1)|  | P4(child of P2)|
+ |   i=2, fork();|    |    i=2, fork(); |   |   i=2, fork()  |  |   i=2, fork()  |
+ -----------------    -------------------   ------------------  ------------------
+          /\                      /\                   /\                        /\
+ fork()>0/  \ fork()=0           /  \        fork()>0 /  \ fork()=0             /  \
+        /    \          fork()>0/    \fork()=0       /    \            fork()>0/    \fork()=0 
+---------    -----------------  /    \         ---------   -----------------   /    \
+| P1    |    |P5(child of P1)|  /    \         | P2    |   |P7(child of P2)|   /    \
+|   i=3 |    |    i=3        |  /    \         |   i=3 |   |    i=3        |   /    \
+---------    -----------------  /    \         ---------   -----------------   /    \
+                        ---------   -----------------                   ---------   -----------------
+                        | P3    |   |P6(child of P3)|                   | P4    |   |P8(child of P4)| 
+                        |   i=3 |   |    i=3        |                   |   i=3 |   |    i=3        |
+                        ---------   -----------------                   ---------   -----------------
+
+Question 4:
+        It is called a binomial distribution,
+    f(k,n,p) = Pr(X=k) = ((n!)/(k!*(n-k!)))*p^k*(1-p)^(n-k), where
+    Pr(X=k) is the probability that a ball falls to the #k bin,
+    n is the time that a ball falls (i.e. the number of bins minus 1),
+    k is the time that a ball falls to the left side, and
+    p is the probability that the ball goes left (i.e. 0.5).
+        For example, to calculate the probability that
+    a ball falls to #4 bin when there are 6 bins in total,
+    n=5, k=3, p=0.5. Therefore,
+    Pr(X=4)=(5!/3!*2!)*(0.5)^3*(0.5)^2=0.3125,
+    which is very close to the result of my program (function 4)
+    (when the number of balls is large enough).

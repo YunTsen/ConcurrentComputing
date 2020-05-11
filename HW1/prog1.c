@@ -266,10 +266,12 @@ void pinball(int x, int y) {
     }
     for (int i = 0; i < x; i++) {
         sprintf(buf, "%3d-(%7d)-(%5.2f)|", i + 1, *(pin + i), (*(pin + i) / (float)y) * 100);
+        write(1, buf, strlen(buf));
         for (float j = 0; j < (*(pin + i) / (float)y) * 100; j++) {
-            sprintf(buf+strlen(buf), "*");
+            sprintf(buf, "*");
+            write(1, buf, strlen(buf));
         }
-        sprintf(buf+strlen(buf), "\n");
+        sprintf(buf, "\n");
         write(1, buf, strlen(buf));
     }
     free(pin);

@@ -1,3 +1,13 @@
+/* -------------------------------------------------------------- */
+/* NAME : YunTsen Lo                           User ID: 108598056 */
+/* DUE DATE : 04/20/2020                                          */
+/* PROGRAM ASSIGNMENT #                                           */
+/* FILE NAME : main.c                                             */
+/* PROGRAM PURPOSE :                                              */
+/*      A main program that reads input array and fork a child to */
+/*    to do merge sort on that array. It uses shared memory to    */
+/*    communicate with its child process.                         */
+/* -------------------------------------------------------------- */
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,14 +18,28 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+/* --------------------------------------------------- */
+/* FUNCTION : main                                     */
+/*       Reads input array and creates a child process  */
+/*     a child process to do merge sort.                */
+/* PARAMETER USAGE :                                   */
+/*    int argc: number of arguments                    */
+/*    char *argv[]: arguments value                    */
+/* FUNCTION CALLED : NONE                              */
+/* --------------------------------------------------- */
 int main(int argc, char *argv[]) {
     char buf[200]; /*for standard output*/
     int n, i, status;
 
-    sprintf(buf, "*** MAIN: Merge Sort with Multiple Processes:\n\n");
+    sprintf(buf, "*** MAIN: Merge Sort with Multiple Processes:\n");
     write(1, buf, strlen(buf));
 
     scanf("%d", &n);                         /*the number of elements of array a[ ]*/
+    if(n==0){
+        sprintf(buf,"*** MAIN: Input null array, process terminates.\n");
+        write(1, buf, strlen(buf));
+        return 0;
+    }
     int *a = (int *)malloc(sizeof(int) * n); /*dynamic memory allocation for array a[]*/
     for (i = 0; i < n; i++) {
         scanf("%d", a + i); /*elements of array a[ ]*/
