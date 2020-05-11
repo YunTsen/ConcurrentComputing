@@ -1,5 +1,5 @@
 
-CC       = c++ -Wfatal-errors 
+CC       = c++ -Wfatal-errors -std=c89
 FLAGS    = -no-pie
 CFLAGS   = -g -O2 -Wno-write-strings -Wno-cpp
 DFLAGS   = -DPACKAGE=\"threadsystem\" -DVERSION=\"1.0\" -DPTHREAD=1 -DUNIX_MSG_Q=1 -DSTDC_HEADERS=1
