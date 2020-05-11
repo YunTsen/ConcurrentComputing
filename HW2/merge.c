@@ -262,11 +262,11 @@ void merge(int *a, int lower_bound, int middle, int upper_bound, int *tem_a) {
             order = modifiedBinarySearch(a[i], tem_y, 0, (n / 2) - 1);
             final_position = i + order;
             tem_a[final_position] = a[i];
-            if (order == 0) {  //x[i] is smaller than every elements in y[]
+            if (order == 0) {  /*x[i] is smaller than every elements in y[]*/
                 sprintf(buf, "      $$$ B-PROC(%ld): a[%d] = %d is smaller than a[%d] = %d and is written to temp[%d]\n",
                         (long)getpid(), i, a[i], y_left + order, a[y_left + order], final_position);
                 write(1, buf, strlen(buf));
-            } else if (order == n / 2) {  //x[i] is bigger than every elements in y[]
+            } else if (order == n / 2) {  /*x[i] is bigger than every elements in y[]*/
                 sprintf(buf, "      $$$ B-PROC(%ld): a[%d] = %d is bigger than a[%d] = %d and is written to temp[%d]\n",
                         (long)getpid(), i, a[i], y_left + order, a[y_left + order], final_position);
                 write(1, buf, strlen(buf));
@@ -288,11 +288,11 @@ void merge(int *a, int lower_bound, int middle, int upper_bound, int *tem_a) {
             order = modifiedBinarySearch(a[i], tem_x, 0, (n / 2) - 1);
             final_position = i - (n / 2) + order;
             tem_a[final_position] = a[i];
-            if (order == 0) {  //y[i] is smaller than every elements in x[]
+            if (order == 0) {  /*y[i] is smaller than every elements in x[]*/
                 sprintf(buf, "      $$$ B-PROC(%ld): a[%d] = %d is smaller than a[%d] = %d and is written to temp[%d]\n",
                         (long)getpid(), i, a[i], x_left + order, a[x_left + order], final_position);
                 write(1, buf, strlen(buf));
-            } else if (order == n / 2) {  //y[i] is bigger than every elements in x[]
+            } else if (order == n / 2) {  /*y[i] is bigger than every elements in x[]*/
                 sprintf(buf, "      $$$ B-PROC(%ld): a[%d] = %d is bigger than a[%d] = %d and is written to temp[%d]\n",
                         (long)getpid(), i, a[i], x_left + order, a[x_left + order], final_position);
                 write(1, buf, strlen(buf));

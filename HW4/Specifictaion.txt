@@ -1,0 +1,31 @@
+Baby eagle(n):
+	- ready_to_eat()
+		wait until a feeding pot has food
+		finds out that all feeding pots are empty. This baby eagle should wake up the mother eagle.
+		exactly one baby eagle who found out all feeding pots being empty can wake the 	mother eagle up.
+	
+	- finish_eating()
+		 the corresponding feeding pot becomes empty
+
+Mother eagle(1):
+	- goto_sleep()
+		 is only called by the mother eagle when she wants to take a nap(until a baby eagle wakes her up).
+	
+	- food_ready()
+		is called when the mother eagle has finished adding food in all m feeding pots. 
+		fill all m feeding pots at the same time
+		 no more than m waiting hungry baby eagles can eat
+
+Notification:
+	wakeMomUp: baby eagle wake Mom Up
+	potsFilled: the m pots are all filled
+
+Count-down lock:
+	/*availablePot(m): baby eagle wait for available pot to eat*/
+
+Mutex:
+	forRound:t rounds?
+	forFilling: is Mom filling?
+	forWakingMom: is other baby waking mom up?
+	forFullPot: fullPot-1/+1, if(fullPot~)
+	

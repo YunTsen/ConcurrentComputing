@@ -1,0 +1,33 @@
+Baby:
+
+
+while(1){
+    play(DELAY);
+    ready_to_eat();
+    eat(DELAY);
+    finish_eating();
+}
+
+ready_to_eat(){
+    cout<<Baby eagle x is ready to eat.
+    fullPotMutex.lock()
+    if(fullPot>0){
+        fullPot--;
+        fullPotMutex.unlock()
+        eat();
+        finish_eating();
+    }
+    else if (fullPot==0){
+        cout<<Baby eagle 2 sees all feeding pots are empty and wakes up the mother.
+        wakeMom(){
+            potsEmpty.signal();
+        }
+        potsFilled.wait();
+        fullPot--;
+        fullPotMutex.unlock()
+        eat();
+        finish_eating();
+    }
+}
+
+finish_eating:

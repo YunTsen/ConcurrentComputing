@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
     }
 
     sprintf(buf, "*** MAIN: Input array for mergesort has %d elements:\n",n);
-    for (int i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) {
         sprintf(buf + strlen(buf), "%4d", *(shmPtr + i));
     }
     sprintf(buf + strlen(buf), "\n");

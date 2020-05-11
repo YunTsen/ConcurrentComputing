@@ -1,0 +1,10 @@
+Mom:
+
+while(round<t){
+    cout<<Mother eagle takes a nap.
+    potsEmpty.wait();
+    fullPots = m;
+    cout<<Mother eagle says "Feeding (round)"
+    potsFilled.signal();
+    round++;
+}
