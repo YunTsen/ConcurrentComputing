@@ -19,8 +19,25 @@
 //  PrefixSumThread Class:
 //     each thread applies PrefixSum algorithm to compute B[stage,index]
 //---------------------------------------------------------------
+class EagleBaseThread : public Thread {
+   public:
+    
 
-class BabyEagleThread : public Thread {
+   protected:
+    static int fullPotsNum;
+    static Mutex fullPotsMutex;
+    static Semaphore *potsFilled;
+    static Semaphore *potsEmpty;
+
+   private:
+   virtual void ThreadFunc()=0;
+    
+};
+
+
+
+
+class BabyEagleThread : public EagleBaseThread {
    public:
     // constructor
     BabyEagleThread(int);
@@ -28,21 +45,21 @@ class BabyEagleThread : public Thread {
     void finish_eating();
 
    private:
-    void ThreadFunc();  //babyEagle thread body
+    virtual void ThreadFunc();  //babyEagle thread body
     const int _index;   //which babyEagle
 };
 
-class MomEagleThread : public Thread {
+class MomEagleThread : public EagleBaseThread {
    public:
     //constructor
-    MomEagleThread(int,int);
+    MomEagleThread(int, int);
     void goto_sleep();
     void food_ready(int m);
 
    private:
-    void ThreadFunc();  //momEagle thread body
+    virtual void ThreadFunc();  //momEagle thread body
     int _t;             //how many rounds should the mom feed her babies
-    const int _m;             //how many pots are there
+    const int _m;       //how many pots are there
 };
 
 int delayTime();

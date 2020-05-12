@@ -10,21 +10,21 @@ while(1){
 
 ready_to_eat(){
     cout<<Baby eagle x is ready to eat.
-    fullPotMutex.lock()
-    if(fullPot>0){
-        fullPot--;
-        fullPotMutex.unlock()
+    fullPotsNumsMutex.lock()
+    if(fullPotsNum>0){
+        fullPotsNum--;
+        fullPotsNumsMutex.unlock()
         eat();
         finish_eating();
     }
-    else if (fullPot==0){
+    else if (fullPotsNum==0){
         cout<<Baby eagle 2 sees all feeding pots are empty and wakes up the mother.
         wakeMom(){
             potsEmpty.signal();
         }
         potsFilled.wait();
-        fullPot--;
-        fullPotMutex.unlock()
+        fullPotsNum--;
+        fullPotsNumsMutex.unlock()
         eat();
         finish_eating();
     }

@@ -4,6 +4,11 @@
 
 using namespace std;
 
+int EagleBaseThread::fullPotsNum = 0;
+Mutex EagleBaseThread::fullPotsMutex;
+Semaphore *EagleBaseThread::potsFilled = new Semaphore("PotsFilled",0);
+Semaphore *EagleBaseThread::potsEmpty = new Semaphore("PotsEmpty",0);
+
 BabyEagleThread::BabyEagleThread(int index):_index(index){
     ThreadName.seekp(0, ios::beg);
     ThreadName << "Baby " << index
@@ -35,4 +40,5 @@ void MomEagleThread::ThreadFunc(){
         food_ready(_m);
         round++;
     }
+    Exit();
 }

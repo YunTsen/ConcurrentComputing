@@ -12,14 +12,14 @@ EXE_FILE = bin/prog4
 ${EXE_FILE}: ${OBJ_FILE}
 	${CC} ${FLAGS}  -o ${EXE_FILE}  ${OBJ_FILE} ${TMLIB} -lpthread
 
-obj/thread.o: thread.cpp
+obj/thread.o: thread.cpp thread.h
 	${CC} ${DFLAGS} ${IFLAGS} ${CFLAGS} -c thread.cpp -o $@
 
-obj/thread-main.o: thread-main.cpp
-	${CC} ${DFLAGS} ${IFLAGS} ${CFLAGS} -c thread-main.cpp -o $@
-
-obj/thread-support.o: thread-support.cpp
+obj/thread-support.o: thread-support.cpp thread.h
 	${CC} ${DFLAGS} ${IFLAGS} ${CFLAGS} -c thread-support.cpp -o $@
+
+obj/thread-main.o: thread-main.cpp thread.h thread.cpp thread-support.cpp
+	${CC} ${DFLAGS} ${IFLAGS} ${CFLAGS} -c thread-main.cpp -o $@
 
 noVisual: ${OBJ_FILE}
 	${CC} ${FLAGS}  -o ${EXE_FILE}  ${OBJ_FILE} ${TMLIB_NV} -lpthread
@@ -33,7 +33,7 @@ dirs:
 	mkdir -p obj
 
 exe:
-	./bin/prog4 < txtFile/input.txt
+	./bin/prog4 8 15 12
 
 export:
 	export PATH=../ThreadMentor/bin:$PATH
