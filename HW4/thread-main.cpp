@@ -21,6 +21,11 @@ int main(int argc, char *argv[]){
     for(int i =0;i<n;i++){
         BabyEagles[i]->Begin();
     }
+
+    momEagle.Join();
+    for(int i =0;i<n;i++){
+        BabyEagles[i]->Join();
+    }
     
     
 

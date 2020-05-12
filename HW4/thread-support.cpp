@@ -15,7 +15,7 @@ void BabyEagleThread::ready_to_eat(){
     EagleBaseThread::fullPotsMutex.Lock();
     if(EagleBaseThread::fullPotsNum>0){
         EagleBaseThread::fullPotsNum--;
-        sprintf(buff,"FullPots:%d.\n", fullPotsNum);
+         sprintf(buff,"Baby eagle %d finishes eating.\n", this->_index);
         write(1,buff,strlen(buff));
         EagleBaseThread::fullPotsMutex.Unlock();
     }
@@ -26,16 +26,13 @@ void BabyEagleThread::ready_to_eat(){
         EagleBaseThread::potsEmpty->Signal();
         EagleBaseThread::potsFilled->Wait();
         EagleBaseThread::fullPotsNum--;
-        sprintf(buff,"FullPots:%d.\n", fullPotsNum);
+        sprintf(buff,"Baby eagle %d finishes eating.\n", this->_index);
         write(1,buff,strlen(buff));
         EagleBaseThread::fullPotsMutex.Unlock();
     }
 } 
 
 void BabyEagleThread::finish_eating(){
-    char buff[200]; //for standard output
-    sprintf(buff,"Baby eagle %d finishes eating.\n", this->_index);
-    write(1,buff,strlen(buff));
 }
 
 void MomEagleThread::goto_sleep(){
@@ -59,7 +56,7 @@ void MomEagleThread::food_ready(int m,int round){
 
 int delayTime(){
     srand( time(NULL) );
-    int min = 1,max=3;//1sec-3sec
+    int min = 1,max=2;//1sec-3sec
     int x = rand() % (max - min + 1) + min;
     return x;
 }

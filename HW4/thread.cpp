@@ -18,7 +18,7 @@ Semaphore *EagleBaseThread::potsEmpty = new Semaphore("PotsEmpty",0);
 
 BabyEagleThread::BabyEagleThread(int index):_index(index){
     ThreadName.seekp(0, ios::beg);
-    ThreadName << "Baby " << index
+    ThreadName << "Baby" << _index
                << '\0';
 }
 
@@ -26,9 +26,9 @@ void BabyEagleThread::ThreadFunc(){
     Thread::ThreadFunc();
     write(1,buff,strlen(buff));
     while(1){
-        //sleep(delayTime());//play
+        sleep(delayTime());//play
         ready_to_eat();
-        //sleep(delayTime());//eat
+        sleep(delayTime());//eat
         finish_eating();
     }
     Exit();
@@ -44,7 +44,7 @@ void MomEagleThread::ThreadFunc(){
     static int round=0;
     while(round<=_t){
         goto_sleep();
-        //sleep(delayTime());//preparing food
+        sleep(delayTime());//preparing food
         food_ready(_m,round);
         round++;
     }
