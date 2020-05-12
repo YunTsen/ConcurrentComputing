@@ -1,10 +1,21 @@
 Mom:
 
-while(round<t){
+while(round<=t){
+    goto_sleep();
+    prepareFood(DELAY);
+    food_ready();
+    ??
+
+    round++;
+}
+
+Exit()
+
+goto_sleep:
     cout<<Mother eagle takes a nap.
     potsEmpty.wait();
+
+food_ready:
     fullPots = m;
     cout<<Mother eagle says "Feeding (round)"
     potsFilled.signal();
-    round++;
-}

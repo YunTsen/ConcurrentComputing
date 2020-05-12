@@ -31,3 +31,5 @@ ready_to_eat(){
 }
 
 finish_eating:
+cou<<Baby eagle x finishes eating.
+Exit()
