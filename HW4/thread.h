@@ -21,7 +21,6 @@
 //---------------------------------------------------------------
 class EagleBaseThread : public Thread {
    public:
-    
 
    protected:
     static int fullPotsNum;
@@ -33,9 +32,6 @@ class EagleBaseThread : public Thread {
    virtual void ThreadFunc()=0;
     
 };
-
-
-
 
 class BabyEagleThread : public EagleBaseThread {
    public:
@@ -54,7 +50,7 @@ class MomEagleThread : public EagleBaseThread {
     //constructor
     MomEagleThread(int, int);
     void goto_sleep();
-    void food_ready(int m);
+    void food_ready(int,int);
 
    private:
     virtual void ThreadFunc();  //momEagle thread body
