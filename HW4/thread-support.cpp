@@ -19,7 +19,8 @@ void BabyEagleThread::ready_to_eat(){
         sprintf(buff+strlen(buff),"Baby eagle %d is eating using feeding pot %d.\n", this->_index,EagleBaseThread::fullPotsNum);
         write(1,buff,strlen(buff));
         EagleBaseThread::fullPotsNum--;
-         sprintf(buff,"Baby eagle %d finishes eating.\n", this->_index);
+        indentation(buff);
+        sprintf(buff+strlen(buff),"Baby eagle %d finishes eating.\n", this->_index);
         write(1,buff,strlen(buff));
         EagleBaseThread::fullPotsMutex.Unlock();
     }
@@ -45,6 +46,7 @@ void BabyEagleThread::finish_eating(){
 }
 
 void BabyEagleThread::indentation(char* buff){
+    memset(buff,0,strlen(buff));
     for(int i =0;i<this->_index;i++){
         sprintf(buff+strlen(buff)," ");
     }

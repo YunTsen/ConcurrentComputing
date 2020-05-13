@@ -50,5 +50,6 @@ void MomEagleThread::ThreadFunc(){
         round++;
     }
     goto_sleep();
+    retire();
     exit(0);
 }
