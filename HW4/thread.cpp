@@ -34,6 +34,7 @@ void BabyEagleThread::ThreadFunc(){
     Exit();
 }
 
+
 MomEagleThread::MomEagleThread(int m,int t):_m(m),_t(t){
     ThreadName.seekp(0, ios::beg);
     ThreadName << "Mom " << '\0';
@@ -42,11 +43,12 @@ MomEagleThread::MomEagleThread(int m,int t):_m(m),_t(t){
 void MomEagleThread::ThreadFunc(){
     Thread::ThreadFunc();
     static int round=0;
-    while(round<=_t){
+    while(round<_t){
         goto_sleep();
         sleep(delayTime());//preparing food
         food_ready(_m,round);
         round++;
     }
-    Exit();
+    goto_sleep();
+    exit(0);
 }

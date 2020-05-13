@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
     t=atoi(argv[3]);//t rounds in total
 
     MomEagleThread momEagle(m,t);
-    for(int i =0;i<n;i++){
+    for(int i =1;i<=n;i++){
         BabyEagleThread *temBabyEagle=new BabyEagleThread(i);
         BabyEagles.push_back(temBabyEagle);
     }

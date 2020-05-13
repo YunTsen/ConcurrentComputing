@@ -39,6 +39,7 @@ class BabyEagleThread : public EagleBaseThread {
     BabyEagleThread(int);
     void ready_to_eat();
     void finish_eating();
+    void indentation(char*);
 
    private:
     virtual void ThreadFunc();  //babyEagle thread body
@@ -51,6 +52,7 @@ class MomEagleThread : public EagleBaseThread {
     MomEagleThread(int, int);
     void goto_sleep();
     void food_ready(int,int);
+    void retire();
 
    private:
     virtual void ThreadFunc();  //momEagle thread body
