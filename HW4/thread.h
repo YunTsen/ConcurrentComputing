@@ -24,6 +24,7 @@ class EagleBaseThread : public Thread {
 
    protected:
     static int fullPotsNum;
+    static int whoCallsMom;
     static Mutex fullPotsMutex;
     static Semaphore *potsFilled;
     static Semaphore *potsEmpty;

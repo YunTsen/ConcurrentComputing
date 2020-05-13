@@ -4,13 +4,9 @@
 
 using namespace std;
 
-/**/
-#include <string.h>
-#include <unistd.h>
-char buff[200]; //for standard output
-/**/
 
 int EagleBaseThread::fullPotsNum = 0;
+int EagleBaseThread::whoCallsMom;
 Mutex EagleBaseThread::fullPotsMutex;
 Semaphore *EagleBaseThread::potsFilled = new Semaphore("PotsFilled",0);
 Semaphore *EagleBaseThread::potsEmpty = new Semaphore("PotsEmpty",0);
@@ -24,7 +20,6 @@ BabyEagleThread::BabyEagleThread(int index):_index(index){
 
 void BabyEagleThread::ThreadFunc(){
     Thread::ThreadFunc();
-    write(1,buff,strlen(buff));
     while(1){
         sleep(delayTime());//play
         ready_to_eat();

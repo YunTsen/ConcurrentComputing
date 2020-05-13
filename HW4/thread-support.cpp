@@ -18,6 +18,7 @@ void BabyEagleThread::ready_to_eat(){
         indentation(buff);
         sprintf(buff+strlen(buff),"Baby eagle %d is eating using feeding pot %d.\n", this->_index,EagleBaseThread::fullPotsNum);
         write(1,buff,strlen(buff));
+        sleep(delayTime());
         EagleBaseThread::fullPotsNum--;
         indentation(buff);
         sprintf(buff+strlen(buff),"Baby eagle %d finishes eating.\n", this->_index);
@@ -28,17 +29,18 @@ void BabyEagleThread::ready_to_eat(){
         indentation(buff);
         sprintf(buff+strlen(buff),"Baby eagle %d sees all feeding pots are empty and wakes up the mother.\n", this->_index);
         write(1,buff,strlen(buff));
-        //wake momEagle up
-        EagleBaseThread::potsEmpty->Signal();
+        EagleBaseThread::whoCallsMom=this->_index;
+        EagleBaseThread::potsEmpty->Signal();//wake momEagle up
         EagleBaseThread::potsFilled->Wait();
         indentation(buff);
         sprintf(buff+strlen(buff),"Baby eagle %d is eating using feeding pot %d.\n", this->_index,EagleBaseThread::fullPotsNum);
         write(1,buff,strlen(buff));
+        sleep(delayTime());
         EagleBaseThread::fullPotsNum--;
         indentation(buff);
         sprintf(buff+strlen(buff),"Baby eagle %d finishes eating.\n", this->_index);
         write(1,buff,strlen(buff));
-        EagleBaseThread::fullPotsMutex.Unlock();
+        EagleBaseThread::fullPotsMutex.Unlock();*/\\
     }
 } 
 
@@ -60,8 +62,10 @@ void MomEagleThread::goto_sleep(){
 }
 
 void MomEagleThread::food_ready(int m,int round){
-    
     char buff[200]; //for standard output
+    sprintf(buff,"Mother eagle is awoke by baby eagle %d and starts preparing food.\"\n",EagleBaseThread::whoCallsMom);
+    write(1,buff,strlen(buff));
+    sleep(delayTime());
     EagleBaseThread::fullPotsNum=m;
     sprintf(buff,"Mother eagle says \"Feeding (%d)\"\n",round+1);
     write(1,buff,strlen(buff));
