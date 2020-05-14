@@ -17,7 +17,9 @@ int main(int argc, char *argv[]){
     sprintf(buff,"MAIN: There are %d baby eagles, %d feeding pots, and %d feedings.\n",n,m,t);
     write(1,buff,strlen(buff));
 
+    //create one momEagle thread
     MomEagleThread momEagle(m,t);
+    //create n babyEagle threads
     for(int i =1;i<=n;i++){
         BabyEagleThread *temBabyEagle=new BabyEagleThread(i);
         BabyEagles.push_back(temBabyEagle);
@@ -31,10 +33,11 @@ int main(int argc, char *argv[]){
         BabyEagles[i]->Begin();
     }
 
+    //wait until momEalge retires
     momEagle.Join();
-    for(int i =0;i<n;i++){
+    /*for(int i =0;i<n;i++){
         BabyEagles[i]->Join();
-    }
+    }*/
     
     
 

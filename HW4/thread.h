@@ -23,11 +23,15 @@ class EagleBaseThread : public Thread {
    public:
 
    protected:
-    static int fullPotsNum;
-    static int whoCallsMom;
-    static Mutex fullPotsMutex;
-    static Semaphore *potsFilled;
-    static Semaphore *potsEmpty;
+    static int fullPotsNum;//number of full feeding pots
+    static int whoCallsMom;//let mom knows who wake her up
+    static int eatingEaglesNum;//number of eating eagles,
+                               //a baby eagle should not wake up the mother 
+                               //if there are baby eagles eating and the remaining pots are empty
+    static Mutex fullPotsMutex;//mutex for EagleBaseThread::fullPotsNum
+    static Mutex eatingEagleMutex;//mutex for EagleBaseThread::eatingEaglesNum
+    static Semaphore *potsFilled;//notifies when mom fill up all feeding pots, then babies could eat
+    static Semaphore *potsEmpty;//notifies when all feeding pots are empty, then mom awake
 
    private:
    virtual void ThreadFunc()=0;
@@ -37,10 +41,11 @@ class EagleBaseThread : public Thread {
 class BabyEagleThread : public EagleBaseThread {
    public:
     // constructor
-    BabyEagleThread(int);
+    BabyEagleThread(int); //arg:index of baby eagle
     void ready_to_eat();
     void finish_eating();
-    void indentation(char*);
+    void indentation(char*); //arg:the buffer for sprintf
+                             //write indentations for ouput format
 
    private:
     virtual void ThreadFunc();  //babyEagle thread body
@@ -50,9 +55,9 @@ class BabyEagleThread : public EagleBaseThread {
 class MomEagleThread : public EagleBaseThread {
    public:
     //constructor
-    MomEagleThread(int, int);
+    MomEagleThread(int, int);//arg:number of pots, number of feeding rounds
     void goto_sleep();
-    void food_ready(int,int);
+    void food_ready(int,int);//arg:how many feeding pots to be filled, which feeding round
     void retire();
 
    private:
@@ -61,6 +66,6 @@ class MomEagleThread : public EagleBaseThread {
     const int _m;       //how many pots are there
 };
 
-int delayTime();
+int getDelayTime();
 
 #endif

@@ -7,6 +7,8 @@ using namespace std;
 
 int EagleBaseThread::fullPotsNum = 0;
 int EagleBaseThread::whoCallsMom;
+int EagleBaseThread::eatingEaglesNum=0;
+Mutex EagleBaseThread::eatingEagleMutex;
 Mutex EagleBaseThread::fullPotsMutex;
 Semaphore *EagleBaseThread::potsFilled = new Semaphore("PotsFilled",0);
 Semaphore *EagleBaseThread::potsEmpty = new Semaphore("PotsEmpty",0);
@@ -21,9 +23,9 @@ BabyEagleThread::BabyEagleThread(int index):_index(index){
 void BabyEagleThread::ThreadFunc(){
     Thread::ThreadFunc();
     while(1){
-        sleep(delayTime());//play
+        sleep(getDelayTime());//play
         ready_to_eat();
-        sleep(delayTime());//eat
+        sleep(getDelayTime());//eat
         finish_eating();
     }
     Exit();
@@ -40,11 +42,11 @@ void MomEagleThread::ThreadFunc(){
     static int round=0;
     while(round<_t){
         goto_sleep();
-        sleep(delayTime());//preparing food
+        sleep(getDelayTime());//preparing food
         food_ready(_m,round);
-        round++;
+        round++;//next feeding round
     }
-    goto_sleep();
+    goto_sleep();//wait until all feeding pots are empty in the last feeding round, then retire
     retire();
     exit(0);
 }
