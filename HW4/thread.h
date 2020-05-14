@@ -1,12 +1,13 @@
 // -----------------------------------------------------------
 // NAME : YunTsen Lo                         User ID: 108598056
-// DUE DATE : 05/04/2020
-// PROGRAM ASSIGNMENT 3
+// DUE DATE : 05/20/2020
+// PROGRAM ASSIGNMENT 4
 // FILE NAME : thread.h
 // PROGRAM PURPOSE :
-//    Head file for class QuickSortThread definition.
+//    Head file for class EagleBaseThread &
+//          BabyEagleThread & MomEagleThread definition.
 //    This program uses multithreaded programming to
-//  implement the Prefix Sum algorithm.
+//    implement Hungry Eagles simulation
 // -----------------------------------------------------------
 
 #ifndef _THREAD_H
@@ -16,8 +17,10 @@
 #include "ThreadClass.h"
 
 //---------------------------------------------------------------
-//  PrefixSumThread Class:
-//     each thread applies PrefixSum algorithm to compute B[stage,index]
+//  EagleBaseThread Class:
+//     base class of BabyEagleThread and MomEagleThread
+//     contains protected static member variables
+//     for needed common control variables
 //---------------------------------------------------------------
 class EagleBaseThread : public Thread {
    public:
@@ -38,6 +41,11 @@ class EagleBaseThread : public Thread {
     
 };
 
+//---------------------------------------------------------------
+//  BabyEagleThread Class:
+//     each baby eats from a full feeding pots and
+//     wake up momEagle when all feeding pots are emtpy
+//---------------------------------------------------------------
 class BabyEagleThread : public EagleBaseThread {
    public:
     // constructor
@@ -52,6 +60,11 @@ class BabyEagleThread : public EagleBaseThread {
     const int _index;   //which babyEagle
 };
 
+//---------------------------------------------------------------
+//  MomEagleThread Class:
+//     The mom sleeps until she is waken up by one babyEagle
+//     Then she fills up all feeding pots and go to sleep again for t rounds
+//---------------------------------------------------------------
 class MomEagleThread : public EagleBaseThread {
    public:
     //constructor

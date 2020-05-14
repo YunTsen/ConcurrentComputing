@@ -33,7 +33,7 @@ dirs:
 	mkdir -p obj
 
 exe:
-	./bin/prog4 3 5 5
+	./bin/prog4 5 8 12
 
 export:
 	export PATH=/home/user/Desktop/ThreadMentor/bin:$PATH
