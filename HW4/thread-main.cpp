@@ -1,10 +1,29 @@
-//#include "thread-support.h"
+// ----------------------------------------------------------- 
+// NAME : YunTsen Lo                         User ID: 108598056 
+// DUE DATE : 05/20/2020                                       
+// PROGRAM ASSIGNMENT 4                                        
+// FILE NAME : thread-main.cpp        
+// PROGRAM PURPOSE :
+//   This program uses multithreaded programming to             
+//    implement the Hungry Eagles simulation
+// -----------------------------------------------------------
 #include "thread.h"
 #include <vector>
 #include <string.h>
 
 
-
+// ----------------------------------------------------------- 
+// FUNCTION main :                       
+//     read m,n,t parameters from command lines
+//         m: how many feeding pots
+//         n: how many baby eagles                  
+//         t: how many feeding rounds    
+//      and run Hungry Eagles simulation              
+// PARAMETER USAGE : 
+//      int argc: number of arguments
+//      char *argv[]: arguments value  
+// FUNCTION CALLED : NONE         
+// ----------------------------------------------------------- 
 int main(int argc, char *argv[]){
     int m,n,t;
     char buff[200];//for standard output

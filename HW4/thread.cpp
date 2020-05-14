@@ -89,5 +89,4 @@ void MomEagleThread::ThreadFunc(){
     }
     goto_sleep();//wait until all feeding pots are empty in the last feeding round, then retire
     retire();
-    exit(0);
 }

@@ -2,7 +2,7 @@
 // NAME : YunTsen Lo                         User ID: 108598056
 // DUE DATE : 05/20/2020
 // PROGRAM ASSIGNMENT 4
-// FILE NAME : thread.cpp
+// FILE NAME : thread-support.cpp
 // PROGRAM PURPOSE :
 //    Parts of class implemention file for class EagleBaseThread &
 //          BabyEagleThread & MomEagleThread (supporting functions)
@@ -69,7 +69,8 @@ void BabyEagleThread::ready_to_eat() {
 // FUNCTION  BabyEagleThread::finish_eating :
 //     babyEagle eats and minus the counter of eating babies afterwards
 // PARAMETER USAGE : NONE
-// FUNCTION CALLED : NONE
+// FUNCTION CALLED : 
+//      void getDelayTime()
 // -----------------------------------------------------------
 void BabyEagleThread::finish_eating() {
     char buff[200];  //for standard output
@@ -103,7 +104,8 @@ void BabyEagleThread::indentation(char* buff) {
 // FUNCTION  MomEagleThread::goto_sleep :
 //     momEagle sleeps until her baby wake her up
 // PARAMETER USAGE : NONE
-// FUNCTION CALLED : NONE
+// FUNCTION CALLED : 
+//      void getDelayTime()
 // -----------------------------------------------------------
 void MomEagleThread::goto_sleep() {
     char buff[200];  //for standard output
@@ -112,6 +114,13 @@ void MomEagleThread::goto_sleep() {
     EagleBaseThread::potsEmpty->Wait();  //wait until a baby eagle wakes her up
 }
 
+// -----------------------------------------------------------
+// FUNCTION  MomEagleThread::food_ready :
+//     momEagle is awake, refills all feeding pots and notifies the calling child
+// PARAMETER USAGE : NONE
+// FUNCTION CALLED : 
+//      void getDelayTime()
+// ----------------------------------------------------------
 void MomEagleThread::food_ready(int m, int round) {
     char buff[200];  //for standard output
     sprintf(buff, "Mother eagle is awoke by baby eagle %d and starts preparing food.\"\n", EagleBaseThread::whoCallsMom);
@@ -123,10 +132,17 @@ void MomEagleThread::food_ready(int m, int round) {
     EagleBaseThread::potsFilled->Signal();  //notifies the calling baby "pots are refilled"
 }
 
+// -----------------------------------------------------------
+// FUNCTION  MomEagleThread::retire :
+//     momEagle retires, exit the program
+// PARAMETER USAGE : NONE
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 void MomEagleThread::retire() {
     char buff[200];  //for standard output
     sprintf(buff, "Mother eagle retires after serving %d feedings. Game is over!!!\n", this->_t);
     write(1, buff, strlen(buff));
+    exit(0);
 }
 
 // -----------------------------------------------------------
