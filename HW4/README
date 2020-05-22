@@ -1,0 +1,32 @@
+                                                                                |
+        Before a baby eats, it locks "fullPotsNum" and check if there is an 
+    non-empty feeding pot(fullPotsNum>0). If there is, it substracts 
+    "fullPotsNum" and eats; otherwise, it wakes up its mom and waits until m
+    feeding pots are refilled(fullPotsNum=m), then it will substract 
+    "fullPotsNum" and eat. After that, it unlock "fullPotsNum". 
+
+Q1: At any time, there are no more than m baby eagles eating.
+        Since "fullPotsNum" is protected by the mutex "fullPotsMutex", the
+    variable satisfies mutual exclusion. Every time before a baby eats, it
+    substracts "fullPotsNum" until it becomes 0. Therefore, no more than m
+    babies could eat at the same time.
+
+Q2: A baby eagle must wait when he wants to eat but has no free feeding pot
+    and/or all free feeding pots are all empty.
+        When a baby wants to eat, it locks "fullPotsMutex". If it finds
+    "fullPotsNum" to be 0, it checks if there are any other babies eating.
+    If there is no baby eating("eatingEaglesNum"=0, which is protected by the
+    mutex "eatingEagleMutex" to ensure mutual exclusion), then it wakes up
+    its mom and waits until all m feeding pots are refilled(fullPotsNum=m).
+    Otherwise, the baby waits until "eatingEaglesNum"=0, and wakes up its mom.
+
+Q3: If there is a non-empty feeding pot, a hungry and ready-to-eat
+    baby eagle can eat.
+        Before a baby eats, it locks "fullPotsNum" and check if there is an 
+    non-empty feeding pot(fullPotsNum>0). If there is, it substracts 
+    "fullPotsNum" and it could eat.
+
+Q4: No hungry baby eagle will eat using an empty feeding pot.
+    
+
+        
