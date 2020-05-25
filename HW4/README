@@ -51,8 +51,7 @@ Q6: Before a baby eats, it locks "fullPotsMutex". When "fullPotsNum" = 0. It
     the whole story. No other baby eagles could check the number of 
     "fullPotsNum", neither could them wake up the mother eagle.
 
-Q7: The mother eagle does not run until a baby eagle wakes her up. 
-        At the begining, "potsEmpty" is set to 0. So the mom is 
+Q7: At the begining, "potsEmpty" is set to 0. So the mom is 
     blocked(sleeping). Only when a baby find out all feeding pots are empty
     and signal "potsEmpty," then mom runs.
 
@@ -60,8 +59,7 @@ Q8: While the mother eagle is preparing food, "fullPotsMutex" is locked by
     the baby who wakes up its mom. So, no other baby eagles could check the
     number of "fullPotsNum", neither could them wake up the mother eagle again.
 
-Q9: Before all m feeding pots are filled, no hungry baby eagle can eat.
-        Before all m feeding pots are filled, mom will not signal "potsFilled."
+Q9: Before all m feeding pots are filled, mom will not signal "potsFilled."
     So the baby who wakes mom up cannot eat, neither can it unlock 
     "fullPotsMutex." Therefore, other hungry babies could not eat, either.
 
