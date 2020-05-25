@@ -1,45 +1,51 @@
-                                                                                |
-        Before a baby eats, it locks "fullPotsNum" and check if there is an 
-    non-empty feeding pot(fullPotsNum>0). If there is, it substracts 
-    "fullPotsNum" and eats; otherwise, it wakes up its mom and waits until m
-    feeding pots are refilled(fullPotsNum=m), then it will substract 
-    "fullPotsNum" and eat. After that, it unlock "fullPotsNum". 
+Logic of my program?
+- Baby Eagles: When they want to eat, they check the number of available
+pots. If it is greater than 0, then eat. Otherwise, wait until all other babies
+finish eating, and wakes the mom up for refilled feeding pots then eat.
 
-Q1: At any time, there are no more than m baby eagles eating.
-        Since "fullPotsNum" is protected by the mutex "fullPotsMutex", the
+- Mother Eagles: Mother eagle sleeps and waits until a baby wake her up, then
+she prepare the food and signal her baby to eat. She repeats t times and
+retires at the t+1 times when her baby wakes her up again(do not refill the
+pots for this time).
+    
+Why does my program work?
+By using the following common control variables:
+- int fullPotsNum: Number of full feeding pots
+- int whoCallsMom: To let mom knows who wake her up
+- int eatingEaglesNum: Number of eating eagles. A baby eagle should not wake up
+    the mother if there are baby eagles eating and the remaining pots are empty
+- Mutex fullPotsMutex: Mutex for "fullPotsNum"
+- Mutex eatingEagleMutex: Mutex for "eatingEaglesNum"
+- Semaphore *potsFilled: Notifies when mom fill up all feeding pots,
+    then babies could eat.
+- Semaphore *potsEmpty: Notifies when all feeding pots are empty, then mom awake
+
+Q1: Since "fullPotsNum" is protected by the mutex "fullPotsMutex", the
     variable satisfies mutual exclusion. Every time before a baby eats, it
     substracts "fullPotsNum" until it becomes 0. Therefore, no more than m
     babies could eat at the same time.
 
-Q2: A baby eagle must wait when he wants to eat but has no free feeding pot
-    and/or all free feeding pots are all empty.
-        When a baby wants to eat, it locks "fullPotsMutex". If it finds
+Q2: When a baby wants to eat, it locks "fullPotsMutex". If it finds
     "fullPotsNum" to be 0, it checks if there are any other babies eating.
     If there is no baby eating("eatingEaglesNum"=0, which is protected by the
     mutex "eatingEagleMutex" to ensure mutual exclusion), then it wakes up
     its mom and waits until all m feeding pots are refilled(fullPotsNum=m).
     Otherwise, the baby waits until "eatingEaglesNum"=0, and wakes up its mom.
 
-Q3: If there is a non-empty feeding pot, a hungry and ready-to-eat
-    baby eagle can eat.
-        Before a baby eats, it locks "fullPotsNum" and check if there is an 
+Q3: Before a baby eats, it locks "fullPotsNum" and check if there is an 
     non-empty feeding pot(fullPotsNum>0). If there is, it substracts 
     "fullPotsNum" and it could eat.
 
-Q4: No hungry baby eagle will eat using an empty feeding pot.
-        Before a baby eats, it locks "fullPotsMutex", substract 1 and check the
-    number of "fullPotsNum", named x. Then it will eat using the (m-x)th feeding
+Q4: Before a baby eats, it locks "fullPotsMutex", substract 1 and check the
+    number of "fullPotsNum", named x. Then it eats using the (m-x)th feeding
     pot to eat. So different babies will eat using different feeding pots and
     they won't eat using empty feeding pot.
-
-Q5: At any time, a feeding pot can only be used by one eating baby eagle.
-        Before a baby eats, it locks "fullPotsMutex", substract 1 and check the
-    number of "fullPotsNum", named x. Then it will eat using the (m-x)th feeding
+                                                                            o    |
+Q5: Before a baby eats, it locks "fullPotsMutex", substract 1 and check the
+    number of "fullPotsNum", named x. Then it eats using the (m-x)th feeding
     pot to eat. So different babies will eat using different feeding pots.
 
-Q6: Only one baby eagle among all baby eagles who want to eat can wake up
-    the mother eagle. 
-        Before a baby eats, it locks "fullPotsMutex". When "fullPotsNum" = 0. It
+Q6: Before a baby eats, it locks "fullPotsMutex". When "fullPotsNum" = 0. It
     wakes it mom up and wait until all feeding pots are refilled, then it can
     eat and eventually unlock "fullPotsMutex". Since the mutex is locked during
     the whole story. No other baby eagles could check the number of 
@@ -50,9 +56,7 @@ Q7: The mother eagle does not run until a baby eagle wakes her up.
     blocked(sleeping). Only when a baby find out all feeding pots are empty
     and signal "potsEmpty," then mom runs.
 
-Q8: While the mother eagle is preparing food, no baby eagle can wake up the
-    mother again until the mother goes back to take a nap.
-        While the mother eagle is preparing food, "fullPotsMutex" is locked by
+Q8: While the mother eagle is preparing food, "fullPotsMutex" is locked by
     the baby who wakes up its mom. So, no other baby eagles could check the
     number of "fullPotsNum", neither could them wake up the mother eagle again.
 
@@ -61,16 +65,10 @@ Q9: Before all m feeding pots are filled, no hungry baby eagle can eat.
     So the baby who wakes mom up cannot eat, neither can it unlock 
     "fullPotsMutex." Therefore, other hungry babies could not eat, either.
 
-Q10: Once the feeding pots are refilled, the mother eagle must
-    allow baby eagles to eat. Then, she goes back to sleep.
-        Once the feeding pots are refilled, mom will signal "potsFilled." Then
+Q10: Once the feeding pots are refilled, mom will signal "potsFilled." Then
     the babies could eat and mom goes back to sleep(potsEmpty.wait()).
                                                                                 |
-Q11: You must terminate your program gracefully. More precisely, if t feedings
-    are needed, then your program cannot terminate right after the mother eagle
-    refills the feeding pots t times. Instead, your program must wait until all
-    feeding pots become empty, even though there may be baby eagles waiting for
-    food. How do you implement this requirement? 
-    
-
-        
+Q11: After t times of refilling, the mother eagle breaks the while loop but
+    do not retire(exit()) immediately. Instead, she goes to sleep
+    (potsEmpty.wait()) for the last time. Next time(t+1) when she is waken up
+    by one of her child, she retires(exit()).
