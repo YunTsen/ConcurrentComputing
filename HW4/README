@@ -40,7 +40,7 @@ Q4: Before a baby eats, it locks "fullPotsMutex", substract 1 and check the
     number of "fullPotsNum", named x. Then it eats using the (m-x)th feeding
     pot to eat. So different babies will eat using different feeding pots and
     they won't eat using empty feeding pot.
-                                                                            o    |
+
 Q5: Before a baby eats, it locks "fullPotsMutex", substract 1 and check the
     number of "fullPotsNum", named x. Then it eats using the (m-x)th feeding
     pot to eat. So different babies will eat using different feeding pots.
@@ -67,7 +67,7 @@ Q9: Before all m feeding pots are filled, no hungry baby eagle can eat.
 
 Q10: Once the feeding pots are refilled, mom will signal "potsFilled." Then
     the babies could eat and mom goes back to sleep(potsEmpty.wait()).
-                                                                                |
+
 Q11: After t times of refilling, the mother eagle breaks the while loop but
     do not retire(exit()) immediately. Instead, she goes to sleep
     (potsEmpty.wait()) for the last time. Next time(t+1) when she is waken up
