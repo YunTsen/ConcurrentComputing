@@ -1,0 +1,19 @@
+public:
+void ThreadFunc(){
+     Thread::ThreadFunc();
+     cout<<"***** BOAT thread starts"<<endl;
+     cout<<"***** The boat is ready"<<endl;
+     while(1){
+        Delay();         // take a rest
+        BoatReady(...);  // ready for the next round
+        Delay();         // row the boat
+        BoatDone(...);   // all people are on the other side
+        // come back for another river crossing 
+     }
+}
+
+void BoatReady(){
+    
+}
+private:
+unsigned int load;

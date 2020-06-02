@@ -1,0 +1,16 @@
+while (1) {
+     Delay();               // take a rest 
+     CannibalArrives(...);  // register to cross the river 
+     // other stuffs 
+     // come back for another river crossing
+}
+
+void CannibalArrives(){
+    M.queue(this);
+}
+void CannibalOnBoard(){
+
+}
+void CannibalOffBoard(){
+    
+}

@@ -1,0 +1,49 @@
+public:
+void queue(Cannbal *c){
+    MonitorBegin();    
+    queuingCannbals.push_back(c);
+    cannbals++;//多了一隻食人怪在排隊
+    if(cannbals+missionaries>=3){//有三個以上乘客在等
+        canPick.signal;
+    }
+    MonitorEnd();
+    return;
+}
+void queue(Missionary *m){
+    MonitorBegin();    
+    queuingMissionaries.push_back(m);
+    missionaries++;//多了一個傳道士在排隊
+    if(cannbals+missionaries>=3){//有三個以上乘客在等
+        canPick.signal;
+    }
+    MonitorEnd();
+    return;
+}
+
+void onBoard(Cannbal *c){
+    MonitorBegin();    
+    
+    MonitorEnd();
+    return;
+}
+
+void offBoard(Cannbal *c){
+    MonitorBegin();    
+    
+    MonitorEnd();
+    return;
+}
+
+void BoatReady(){
+    while()
+    canPick.wait();
+}
+
+
+
+private:
+Condition canPick;
+vector<Cannbal*> queuingCannbals;
+vector<Missionary*> queuingMissionaries;
+unsigned int cannbals;
+unsigned int missionaries;
