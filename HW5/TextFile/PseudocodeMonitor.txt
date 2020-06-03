@@ -1,7 +1,7 @@
 public:
-void queue(Cannbal *c){
+void queue(Passenger p){
     MonitorBegin();    
-    queuingCannbals.push_back(c);
+    queuingList.push_back(p);
     cannbals++;//多了一隻食人怪在排隊
     total++;
     if(total>=3&&missionaries!=1){//有三個以上乘客在等，且傳道士>1
@@ -10,19 +10,9 @@ void queue(Cannbal *c){
     MonitorEnd();
     return;
 }
-void queue(Missionary *m){
-    MonitorBegin();    
-    queuingMissionaries.push_back(m);
-    missionaries++;//多了一個傳道士在排隊
-    total++;
-    if(total>=3&&missionaries!=1){//有三個以上乘客在等，且傳道士>1
-        canPick.signal();
-    }
-    MonitorEnd();
-    return;
-}
 
-void onBoard(Cannbal *c){
+
+void onBoard(Passenger *p){
     MonitorBegin();
     cannbalsWait[c->getIndex()].wait();   
     
@@ -30,15 +20,8 @@ void onBoard(Cannbal *c){
     return;
 }
 
-void onBoard(Missionary *m){
-    MonitorBegin();
-    MissionarWait[c->getIndex()].wait();   
-    
-    MonitorEnd();
-    return;
-}
 
-void offBoard(Cannbal *c){
+void offBoard(Passenger *p){
     MonitorBegin();    
     
     MonitorEnd();
@@ -53,29 +36,72 @@ void BoatReady(){
 }
 
 bool BoatPick(){
-    MonitorBegin();    
+    MonitorBegin();
+    bool canGo=false;
     int min = 1;
     int max = total;
     int x = rand() % (max - min + 1) + min;
 
-    if(x>missionaries){//挑到食人族
-        x = rand() % (max - missionaries + 1) + min;
-        Pick(cannbalsQueue[x]);
+    if(x<=cannbals){//第一個挑到食人族
+        max = cannbals-1;
+        min = 0;
+        x = rand() % (max - min + 1) + min;
+        pickup(queuingList[x]);
+        if()
+    }
+    else{//第一個挑到傳道士
+        max = total-1;
+        min = cannbals;
+        x = rand() % (max - min + 1) + min;
+        pickup(queuingList[x]);
+    }
+
+    if(!canGo){
+        pickupFailed();
     }
     MonitorEnd();
 
-    return;
+    return canGo;
 }
 
-Pick(x);
+pickup(Passenger *p){
+    pickupList.push_back(p);
+    if(p->isCannbal()){
+        cannbals--;
+        mySort(&pickupList);
+    }
+    else{
+        missionaries--;
+    }
+    queuingList.erase(queuingList.begin()+x);
+}
+pickupFailed(){
+    for(int i = 0;i<pickupList.size();i++){
+            queuingList.push_back(pickupList[i]);
+            if(p->isCannbal()){
+                cannbals++;
+                mySort(&queuingList);
+            }
+            else{
+                missionaries++;
+            }
+        }
+        pickupList.clear();
+}
+
+mySort(vector<Passenger*>* v){
+    if(*v[total-1]->isCannbal){
+        swap(*v[total-1],*v[cannbals]);
+    }
+}
 
 
 private:
 Condition canPick;
 vector<Condition> missionarisWait[m];
 vector<Condition> cannbalsWait[c];
-vector<Missionary*> missionariesQueue;
-vector<Cannbal*> cannbalsQueue;
+vector<Passenger*> queuingList;
+vector<Passenger*> pickupList;
 unsigned int cannbals;
 unsigned int missionaries;
 unsigned int total;
