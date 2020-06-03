@@ -6,6 +6,7 @@ void ThreadFunc(){
      while(1){
         Delay();         // take a rest
         BoatReady(...);  // ready for the next round
+        while(!M.boatPick()){};
         Delay();         // row the boat
         BoatDone(...);   // all people are on the other side
         // come back for another river crossing 

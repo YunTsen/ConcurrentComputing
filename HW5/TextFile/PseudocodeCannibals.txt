@@ -9,7 +9,7 @@ void CannibalArrives(){
     M.queue(this);
 }
 void CannibalOnBoard(){
-
+    M.onBoard(this);
 }
 void CannibalOffBoard(){
     
