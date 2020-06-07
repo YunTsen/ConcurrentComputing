@@ -12,7 +12,7 @@
 #include "boat-monitor.h"
 
 // static data variables
-static RiverCrossingMonitor RCM("RCMonitor",8,8);
+static RiverCrossingMonitor RCM("RCMonitor",5,5);
 
 //------------------------------------------------------------------------
 // IncrementThread::IncrementThread()
@@ -123,10 +123,7 @@ void BoatThread::BoatReady(){
     char buff[200];
     sprintf(buff,"***** The boat is ready\n");
     write(1,buff,strlen(buff));
-    while(!RCM.boatPick()){
-        sprintf(buff,"***** The boat is picking\n");
-        write(1,buff,strlen(buff));
-    };
+    while(!RCM.boatPick()){};
 }
 void BoatThread::BoatGo(){
     RCM.baotOnBoard();

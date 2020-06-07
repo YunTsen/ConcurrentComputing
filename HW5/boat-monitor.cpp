@@ -50,12 +50,12 @@ RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m)
 //------------------------------------------------------------------------
 void RiverCrossingMonitor::showList() {
     char buff[200];
-    sprintf(buff, "QL: ");
+    sprintf(buff, "QL: %d\n",_total);
     for (int i = 0; i < _queuingList.size(); i++) {
         if (_queuingList[i]->isCannibal()) {
-            sprintf(buff + strlen(buff), "c%d \n", _queuingList[i]->getIndex());
+            sprintf(buff + strlen(buff), "c%d ", _queuingList[i]->getIndex());
         } else {
-            sprintf(buff + strlen(buff), "m%d \n", _queuingList[i]->getIndex());
+            sprintf(buff + strlen(buff), "m%d ", _queuingList[i]->getIndex());
         }
     }
     sprintf(buff + strlen(buff), "\n");
@@ -97,6 +97,7 @@ void RiverCrossingMonitor::passengerOffBoard(PassengerThread *p) {
     MonitorEnd();
 }
 bool RiverCrossingMonitor::boatPick() {
+    char buff[200];
     bool canGo = false;
     int min = 1;
     int max = _total;
@@ -106,7 +107,8 @@ bool RiverCrossingMonitor::boatPick() {
     if (_total < 3) {  //小於三個乘客在等
         _canPick->Wait();
     }
-
+    sprintf(buff,"***** The boat is picking\n");
+    write(1,buff,strlen(buff));
     if (x <= _cannibals) {  //第一個挑到食人族
         if (!_cannibals) {
             MonitorEnd();

@@ -18,8 +18,8 @@
 //------------------------------------------------------------------------
 
 int main(int argc, char *argv[]) {
-    int c = (atoi(argv[1]) == 0) ? 8 : atoi(argv[1]);  // number of increment theads
-    int m = (atoi(argv[2]) == 0) ? 8 : atoi(argv[2]);                     // number of decrement theads
+    int c = (atoi(argv[1]) == 0) ? 5 : atoi(argv[1]);  // number of increment theads
+    int m = (atoi(argv[2]) == 0) ? 5 : atoi(argv[2]);                     // number of decrement theads
     int b = (atoi(argv[3]) == 0) ? 5 : atoi(argv[3]);                     // total number of threads
     vector <CannThread*> cannThreads;
     vector <MissThread*> missThreads;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
     for(int i =0;i<m;i++){
         missThreads[i]->Begin();
     }
-    
+    boatThread->Join();
 
     Exit();
 }
