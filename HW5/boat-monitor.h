@@ -18,7 +18,7 @@ class PassengerThread;
 
 class RiverCrossingMonitor : public Monitor {
    public:
-    RiverCrossingMonitor(char* Name,int c,int m);  // constructor
+    RiverCrossingMonitor(char* Name,int c,int m, int b);  // constructor
     void passengerQueue(PassengerThread* p);
     void passengerOnBoard(PassengerThread* p);
     void passengerOffBoard(PassengerThread* p);
@@ -27,14 +27,16 @@ class RiverCrossingMonitor : public Monitor {
     void baotOnBoard();
     void boatOffBoard();
     void showList();
+    int getBoatLoad();
 
    private:
-    void mySort(vector<PassengerThread*>*);
     void listPickupFailed();
     int _boatLoad;  // internal counter
     Condition *_canPick;
     vector<Condition*> _missionarisWait;
     vector<Condition*> _cannibalsWait;
+    vector<Condition*> _missionarisWait_off;
+    vector<Condition*> _cannibalsWait_off;
     vector<PassengerThread*> _queuingList;
     vector<PassengerThread*> _pickupList;
     unsigned int _cannibals;

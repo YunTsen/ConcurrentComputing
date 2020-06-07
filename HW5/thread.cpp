@@ -12,7 +12,7 @@
 #include "boat-monitor.h"
 
 // static data variables
-static RiverCrossingMonitor RCM("RCMonitor",5,5);
+RiverCrossingMonitor* PassengerThread::PassengerThread::RCM;
 
 //------------------------------------------------------------------------
 // IncrementThread::IncrementThread()
@@ -28,7 +28,7 @@ int  PassengerThread::getIndex(){
 
 void PassengerThread::Arrives() {
     char buff[200];  //for standard output
-    RCM.passengerQueue(this);
+    PassengerThread::RCM->passengerQueue(this);
     if(this->isCannibal()){
         sprintf(buff,"Cannibal %d arrives\n",this->getIndex());
         write(1,buff,strlen(buff));
@@ -40,11 +40,11 @@ void PassengerThread::Arrives() {
 }
 
 void PassengerThread::OnBoard() {
-    RCM.passengerOnBoard(this);
+    PassengerThread::RCM->passengerOnBoard(this);
 }
 
 void PassengerThread::OffBoard() {
-    RCM.passengerOffBoard(this);
+    PassengerThread::RCM->passengerOffBoard(this);
 }
 
 CannThread::CannThread(int index) : PassengerThread(index) {
@@ -97,7 +97,7 @@ void MissThread::ThreadFunc() {
     }
     Exit();
 }
-BoatThread::BoatThread() {
+BoatThread::BoatThread(int b):_b(b) {
     char buff[200];  //for standard output
     ThreadName.seekp(0, ios::beg);
     ThreadName << "Boat\0";
@@ -111,9 +111,12 @@ void BoatThread::ThreadFunc() {
         //Delay();         // take a rest
         BoatReady();  // ready for the next round
         BoatGo();
-        //Delay();        // row the boat
+        Delay();        // row the boat
         BoatDone();  // all people are on the other side
         // come back for another river crossing
+        if(PassengerThread::RCM->getBoatLoad()==_b){
+            break;
+        }
     }
     Exit();
 }
@@ -122,19 +125,19 @@ void BoatThread::BoatReady(){
     char buff[200];
     sprintf(buff,"***** The boat is ready\n");
     write(1,buff,strlen(buff));
-    while(!RCM.boatPick()){};
+    while(!PassengerThread::RCM->boatPick()){};
 }
 void BoatThread::BoatGo(){
-    RCM.baotOnBoard();
+    PassengerThread::RCM->baotOnBoard();
 }
 void BoatThread::Delay(){
     sleep(getDelayTime());
 }
 void BoatThread::BoatDone(){
     char buff[200];
-    sprintf(buff,"***** Boat load (1): Completed\n");
+    sprintf(buff,"***** Boat load (%d): Completed\n", PassengerThread::RCM->getBoatLoad()+1);
     write(1,buff,strlen(buff));
-    RCM.boatOffBoard();
+    PassengerThread::RCM->boatOffBoard();
 }
 
 int getDelayTime() {

@@ -13,12 +13,13 @@
 //------------------------------------------------------------------------
 // Inc/Dec thread class definition
 //------------------------------------------------------------------------
-
+class RiverCrossingMonitor;
 class PassengerThread : public Thread {
    public:
     PassengerThread(int index);  // constructor
     virtual bool isCannibal()=0;
     int getIndex();
+    static RiverCrossingMonitor *RCM;
    
    protected:
    void Arrives();
@@ -50,7 +51,7 @@ class MissThread : public PassengerThread {
 
 class BoatThread : public Thread {
    public:
-    BoatThread();
+    BoatThread(int b);
 
    private:
      void ThreadFunc();
@@ -58,6 +59,7 @@ class BoatThread : public Thread {
      void BoatGo();
      void Delay();
      void BoatDone();
+     int _b;
 };
 
 int getDelayTime();

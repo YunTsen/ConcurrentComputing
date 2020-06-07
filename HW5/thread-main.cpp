@@ -23,6 +23,8 @@ int main(int argc, char *argv[]) {
     int b = (atoi(argv[3]) == 0) ? 5 : atoi(argv[3]);                     // total number of threads
     vector <CannThread*> cannThreads;
     vector <MissThread*> missThreads;
+    PassengerThread::RCM= new RiverCrossingMonitor("RCMonitor",c,m,b);
+    
     srand((unsigned int)time(NULL));  // initialize random seed
 
     // create the increment/decrement threads in a random way
@@ -34,7 +36,7 @@ int main(int argc, char *argv[]) {
         MissThread *temMissThreads = new MissThread(i);
         missThreads.push_back(temMissThreads);
     }
-    BoatThread *boatThread = new BoatThread();
+    BoatThread *boatThread = new BoatThread(b);
 
     boatThread->Begin();
     for(int i =0;i<c;i++){
