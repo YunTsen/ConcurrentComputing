@@ -30,16 +30,16 @@ RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m)
     _total = 0;
 
     strstream *conditionName = new strstream;
-    conditionName->seekp(0,ios::beg);
+    conditionName->seekp(0, ios::beg);
 
     for (int i = 0; i < c; i++) {
-        (*conditionName)<<"C"<<i<<'\0';
+        (*conditionName) << "C" << i << '\0';
         Condition *temCon = new Condition(conditionName->str());
         _cannibalsWait.push_back(temCon);
     }
     for (int i = 0; i < m; i++) {
-        (*conditionName)<<"M"<<i<<'\0';
-         Condition *temCon = new Condition(conditionName->str());
+        (*conditionName) << "M" << i << '\0';
+        Condition *temCon = new Condition(conditionName->str());
         _missionarisWait.push_back(temCon);
     }
 }
@@ -50,7 +50,7 @@ RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m)
 //------------------------------------------------------------------------
 void RiverCrossingMonitor::showList() {
     char buff[200];
-    sprintf(buff, "QL: %d\n",_total);
+    sprintf(buff, "QL: %d\n", _total);
     for (int i = 0; i < _queuingList.size(); i++) {
         if (_queuingList[i]->isCannibal()) {
             sprintf(buff + strlen(buff), "c%d ", _queuingList[i]->getIndex());
@@ -65,13 +65,12 @@ void RiverCrossingMonitor::showList() {
 void RiverCrossingMonitor::passengerQueue(PassengerThread *p) {
     MonitorBegin();
     _queuingList.push_back(p);
-    if (p->isCannibal()){
+    if (p->isCannibal()) {
         _cannibals++;
         _total++;
         //mySort(&_queuingList);
-        swap(_queuingList[_total - 1], _queuingList[_cannibals-1]);        
-    }
-    else{
+        swap(_queuingList[_total - 1], _queuingList[_cannibals - 1]);
+    } else {
         _missionaries++;
         _total++;
     }
@@ -107,16 +106,22 @@ bool RiverCrossingMonitor::boatPick() {
     if (_total < 3) {  //小於三個乘客在等
         _canPick->Wait();
     }
-    sprintf(buff,"***** The boat is picking\n");
-    write(1,buff,strlen(buff));
+
+    sprintf(buff, "***** The boat is picking\n");
+    write(1, buff, strlen(buff));
+
     if (x <= _cannibals) {  //第一個挑到食人族
         if (!_cannibals) {
             MonitorEnd();
+            sprintf(buff, "沒有食人族\n");
+            write(1, buff, strlen(buff));
             return canGo;
         }
         max = _cannibals - 1;
         min = 0;
         x = rand() % (max - min + 1) + min;
+        sprintf(buff, "第一個挑到食人族%d  C%d\n", x, _queuingList[x]->getIndex());
+        write(1, buff, strlen(buff));
         listPickup(_queuingList[x], x);
 
         min = 1;
@@ -124,51 +129,71 @@ bool RiverCrossingMonitor::boatPick() {
         x = rand() % (max - min + 1) + min;
         if (x <= _cannibals) {  //食人族+食人族
             if (!_cannibals) {
+                sprintf(buff, "沒有食人族\n");
+                write(1, buff, strlen(buff));
                 MonitorEnd();
                 return canGo;
             }
             max = _cannibals - 1;
             min = 0;
             x = rand() % (max - min + 1) + min;
+            sprintf(buff, "第二個挑到食人族%d  C%d\n", x, _queuingList[x]->getIndex());
+            write(1, buff, strlen(buff));
             listPickup(_queuingList[x], x);
 
             //食人族+食人族+食人族
             if (!_cannibals) {
+                sprintf(buff, "沒有食人族\n");
+                write(1, buff, strlen(buff));
                 MonitorEnd();
                 return canGo;
             }
             max--;
             x = rand() % (max - min + 1) + min;
+            sprintf(buff, "第三個挑到食人族%d  C%d\n", x, _queuingList[x]->getIndex());
+            write(1, buff, strlen(buff));
             listPickup(_queuingList[x], x);
             canGo = true;
         } else {  //食人族+傳道士
             if (!_missionaries) {
+                sprintf(buff, "沒有傳道士\n");
+                write(1, buff, strlen(buff));
                 MonitorEnd();
                 return canGo;
             }
             max = _total - 1;
             min = _cannibals;
             x = rand() % (max - min + 1) + min;
+            sprintf(buff, "第二個挑到傳道士%d  M%d\n", x, _queuingList[x]->getIndex());
+            write(1, buff, strlen(buff));
             listPickup(_queuingList[x], x);
 
             //食人族+傳道士+傳道士
             if (!_missionaries) {
+                sprintf(buff, "沒有傳道士\n");
+                write(1, buff, strlen(buff));
                 MonitorEnd();
                 return canGo;
             }
             max--;
             x = rand() % (max - min + 1) + min;
+            sprintf(buff, "第三個挑到傳道士%d  M%d\n", x, _queuingList[x]->getIndex());
+            write(1, buff, strlen(buff));
             listPickup(_queuingList[x], x);
             canGo = true;
         }
     } else {  //第一個挑到傳道士
         if (!_missionaries) {
+            sprintf(buff, "沒有傳道士\n");
+            write(1, buff, strlen(buff));
             MonitorEnd();
             return canGo;
         }
         max = _total - 1;
         min = _cannibals;
         x = rand() % (max - min + 1) + min;
+        sprintf(buff, "第一個挑到傳道士%d  M%d\n", x, _queuingList[x]->getIndex());
+        write(1, buff, strlen(buff));
         listPickup(_queuingList[x], x);
 
         min = 1;
@@ -176,32 +201,44 @@ bool RiverCrossingMonitor::boatPick() {
         x = rand() % (max - min + 1) + min;
         if (x <= _cannibals) {  //傳道士+食人族
             if (!_cannibals) {
+                sprintf(buff, "沒有食人族\n");
+                write(1, buff, strlen(buff));
                 MonitorEnd();
                 return canGo;
             }
             max = _cannibals - 1;
             min = 0;
             x = rand() % (max - min + 1) + min;
+            sprintf(buff, "第二個挑到食人族%d  C%d\n", x, _queuingList[x]->getIndex());
+            write(1, buff, strlen(buff));
             listPickup(_queuingList[x], x);
 
             //傳道士+食人族+傳道士
             if (!_missionaries) {
+                sprintf(buff, "沒有傳道士\n");
+                write(1, buff, strlen(buff));
                 MonitorEnd();
                 return canGo;
             }
             max = _total - 1;
             min = _cannibals;
             x = rand() % (max - min + 1) + min;
+            sprintf(buff, "第三個挑到傳道士%d  M%d\n", x, _queuingList[x]->getIndex());
+            write(1, buff, strlen(buff));
             listPickup(_queuingList[x], x);
             canGo = true;
         } else {  //傳道士+傳道士
             if (!_missionaries) {
+                sprintf(buff, "沒有傳道士\n");
+                write(1, buff, strlen(buff));
                 MonitorEnd();
                 return canGo;
             }
             max = _total - 1;
             min = _cannibals;
             x = rand() % (max - min + 1) + min;
+            sprintf(buff, "第二個挑到傳道士%d  M%d\n", x, _queuingList[x]->getIndex());
+            write(1, buff, strlen(buff));
             listPickup(_queuingList[x], x);
 
             min = 1;
@@ -209,22 +246,30 @@ bool RiverCrossingMonitor::boatPick() {
             x = rand() % (max - min + 1) + min;
             if (x <= _cannibals) {  //傳道士+傳道士+食人族
                 if (!_cannibals) {
+                    sprintf(buff, "沒有食人族\n");
+                    write(1, buff, strlen(buff));
                     MonitorEnd();
                     return canGo;
                 }
                 max = _cannibals - 1;
                 min = 0;
                 x = rand() % (max - min + 1) + min;
+                sprintf(buff, "第三個挑到食人族%d  C%d\n", x, _queuingList[x]->getIndex());
+                write(1, buff, strlen(buff));
                 listPickup(_queuingList[x], x);
                 canGo = true;
             } else {  //傳道士+傳道士+傳道士
                 if (!_missionaries) {
+                    sprintf(buff, "沒有傳道士\n");
+                    write(1, buff, strlen(buff));
                     MonitorEnd();
                     return canGo;
                 }
                 max = _total - 1;
                 min = _cannibals;
                 x = rand() % (max - min + 1) + min;
+                sprintf(buff, "第三個挑到傳道士%d  M%d\n", x, _queuingList[x]->getIndex());
+                write(1, buff, strlen(buff));
                 listPickup(_queuingList[x], x);
                 canGo = true;
             }
@@ -239,16 +284,24 @@ bool RiverCrossingMonitor::boatPick() {
     return canGo;
 }
 void RiverCrossingMonitor::listPickup(PassengerThread *p, int x) {
-    MonitorBegin();
+    char buff[200];
+
+    if (p->isCannibal()) {
+        sprintf(buff, "pick:c%d ", p->getIndex());
+    } else {
+        sprintf(buff, "pick:m%d ", p->getIndex());
+    }
+
     _pickupList.push_back(p);
     _queuingList.erase(_queuingList.begin() + x);
     if (p->isCannibal()) {
         _cannibals--;
-        mySort(&_pickupList);
+        _total--;
+        //swap(pick_pickupList.size()-1);
     } else {
         _missionaries--;
+        _total--;
     }
-    MonitorEnd();
 }
 
 void RiverCrossingMonitor::baotOnBoard() {
@@ -274,24 +327,23 @@ void RiverCrossingMonitor::boatOffBoard() {
 }
 
 void RiverCrossingMonitor::mySort(vector<PassengerThread *> *v) {
-    
-    
-        swap((*v)[_total - 1], (*v)[_cannibals]);
-    
+    swap((*v)[_total - 1], (*v)[_cannibals]);
 }
 
 void RiverCrossingMonitor::listPickupFailed() {
-    
     for (int i = 0; i < _pickupList.size(); i++) {
         _queuingList.push_back(_pickupList[i]);
         if (_pickupList[i]->isCannibal()) {
             _cannibals++;
-            mySort(&_queuingList);
+            _total++;
+            //mySort(&_queuingList);
+            swap(_queuingList[_total - 1], _queuingList[_cannibals - 1]);
         } else {
             _missionaries++;
+            _total++;
+            swap(_queuingList[_total - 1], _queuingList[_cannibals - 1]);
         }
     }
     _pickupList.clear();
-    
 }
 // end of IncDec-mon.cpp

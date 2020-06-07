@@ -37,7 +37,6 @@ void PassengerThread::Arrives() {
         sprintf(buff,"Missionary %d arrives\n",this->getIndex());
         write(1,buff,strlen(buff));
     }
-   
 }
 
 void PassengerThread::OnBoard() {
@@ -132,6 +131,9 @@ void BoatThread::Delay(){
     sleep(getDelayTime());
 }
 void BoatThread::BoatDone(){
+    char buff[200];
+    sprintf(buff,"***** Boat load (1): Completed\n");
+    write(1,buff,strlen(buff));
     RCM.boatOffBoard();
 }
 
