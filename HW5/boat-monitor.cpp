@@ -29,14 +29,19 @@ RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m)
     _missionaries = 0;
     _total = 0;
 
-    Condition *temCon = new Condition("con");
+    strstream *conditionName = new strstream;
+    conditionName->seekp(0,ios::beg);
+
     for (int i = 0; i < c; i++) {
+        (*conditionName)<<"Self"<<i<<'\0';
+        Condition *temCon = new Condition(conditionName->str());
         _cannibalsWait.push_back(temCon);
     }
     for (int i = 0; i < m; i++) {
+        (*conditionName)<<"Self"<<i<<'\0';
+         Condition *temCon = new Condition(conditionName->str());
         _missionarisWait.push_back(temCon);
     }
-    showList();
 }
 
 //------------------------------------------------------------------------
@@ -44,7 +49,6 @@ RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m)
 //      Monitor procedure Increment: increases the internal counter.
 //------------------------------------------------------------------------
 void RiverCrossingMonitor::showList() {
-    MonitorBegin();
     char buff[200];
     sprintf(buff, "QL: ");
     for (int i = 0; i < _queuingList.size(); i++) {
@@ -56,16 +60,21 @@ void RiverCrossingMonitor::showList() {
     }
     sprintf(buff + strlen(buff), "\n");
     write(1, buff, strlen(buff));
-    MonitorEnd();
 }
 
 void RiverCrossingMonitor::passengerQueue(PassengerThread *p) {
+    MonitorBegin();
     _queuingList.push_back(p);
-    showList();
-    if (p->isCannibal()) mySort(&_queuingList);
-    _cannibals++;  //多了一隻食人怪在排隊
+    if (p->isCannibal()){
+        mySort(&_queuingList);
+        _cannibals++;
+    }
+    else{
+        _missionaries++;
+    }
     _total++;
     _canPick->Signal();
+    MonitorEnd();
 }
 
 void RiverCrossingMonitor::passengerOnBoard(PassengerThread *p) {
@@ -260,15 +269,15 @@ void RiverCrossingMonitor::boatOffBoard() {
 }
 
 void RiverCrossingMonitor::mySort(vector<PassengerThread *> *v) {
-    MonitorBegin();
+    
     if ((*v)[_total - 1]->isCannibal()) {
         swap((*v)[_total - 1], (*v)[_cannibals]);
     }
-    MonitorEnd();
+    
 }
 
 void RiverCrossingMonitor::listPickupFailed() {
-    MonitorBegin();
+    
     for (int i = 0; i < _pickupList.size(); i++) {
         _queuingList.push_back(_pickupList[i]);
         if (_pickupList[i]->isCannibal()) {
@@ -279,6 +288,6 @@ void RiverCrossingMonitor::listPickupFailed() {
         }
     }
     _pickupList.clear();
-    MonitorEnd();
+    
 }
 // end of IncDec-mon.cpp
