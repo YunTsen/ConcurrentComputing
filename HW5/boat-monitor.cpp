@@ -33,12 +33,12 @@ RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m)
     conditionName->seekp(0,ios::beg);
 
     for (int i = 0; i < c; i++) {
-        (*conditionName)<<"Self"<<i<<'\0';
+        (*conditionName)<<"C"<<i<<'\0';
         Condition *temCon = new Condition(conditionName->str());
         _cannibalsWait.push_back(temCon);
     }
     for (int i = 0; i < m; i++) {
-        (*conditionName)<<"Self"<<i<<'\0';
+        (*conditionName)<<"M"<<i<<'\0';
          Condition *temCon = new Condition(conditionName->str());
         _missionarisWait.push_back(temCon);
     }
@@ -66,14 +66,17 @@ void RiverCrossingMonitor::passengerQueue(PassengerThread *p) {
     MonitorBegin();
     _queuingList.push_back(p);
     if (p->isCannibal()){
-        mySort(&_queuingList);
         _cannibals++;
+        _total++;
+        //mySort(&_queuingList);
+        swap(_queuingList[_total - 1], _queuingList[_cannibals-1]);        
     }
     else{
         _missionaries++;
+        _total++;
     }
-    _total++;
-    _canPick->Signal();
+    showList();
+    //_canPick->Signal();
     MonitorEnd();
 }
 
@@ -270,9 +273,8 @@ void RiverCrossingMonitor::boatOffBoard() {
 
 void RiverCrossingMonitor::mySort(vector<PassengerThread *> *v) {
     
-    if ((*v)[_total - 1]->isCannibal()) {
+    
         swap((*v)[_total - 1], (*v)[_cannibals]);
-    }
     
 }
 

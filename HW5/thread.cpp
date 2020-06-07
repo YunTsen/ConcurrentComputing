@@ -28,7 +28,7 @@ int  PassengerThread::getIndex(){
 
 void PassengerThread::Arrives() {
     char buff[200];  //for standard output
-     RCM.passengerQueue(this);
+    RCM.passengerQueue(this);
     if(this->isCannibal()){
         sprintf(buff,"Cannibal %d arrives\n",this->getIndex());
         write(1,buff,strlen(buff));
