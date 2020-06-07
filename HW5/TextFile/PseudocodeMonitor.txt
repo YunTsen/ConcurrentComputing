@@ -4,9 +4,9 @@ void queue(Passenger p){
     queuingList.push_back(p);
     cannbals++;//多了一隻食人怪在排隊
     total++;
-    if(total>=3&&missionaries!=1){//有三個以上乘客在等，且傳道士>1
+    //if(total>=3){//有三個以上乘客在等，且傳道士>1
         canPick.signal();
-    }
+    //}
     MonitorEnd();
     return;
 }
@@ -14,8 +14,10 @@ void queue(Passenger p){
 
 void onBoard(Passenger *p){
     MonitorBegin();
-    cannbalsWait[c->getIndex()].wait();   
-    
+    if(this->isCannbal())
+        cannbalsWait[p->getIndex()].wait(); 
+    else 
+        missionarisWait[p->getIndex()].wait();
     MonitorEnd();
     return;
 }
@@ -23,37 +25,146 @@ void onBoard(Passenger *p){
 
 void offBoard(Passenger *p){
     MonitorBegin();    
-    
+    if(this->isCannbal())
+        cannbalsWait[p->getIndex()].wait(); 
+    else 
+        missionarisWait[p->getIndex()].wait();
     MonitorEnd();
     return;
 }
 
-void BoatReady(){
-    MonitorBegin();    
-    canPick.wait();
-    MonitorEnd();
-    return;
-}
-
-bool BoatPick(){
+bool boatPick(){
     MonitorBegin();
+    if(total<3){//小於三個乘客在等
+        canPick.wait();
+    }
+
     bool canGo=false;
     int min = 1;
     int max = total;
     int x = rand() % (max - min + 1) + min;
 
     if(x<=cannbals){//第一個挑到食人族
+        if(!cannbals){
+            MonitorEnd();
+            return canGo;
+        }
         max = cannbals-1;
         min = 0;
         x = rand() % (max - min + 1) + min;
         pickup(queuingList[x]);
-        if()
+
+        min = 1;
+        max = total;
+        x = rand() % (max - min + 1) + min;
+        if((x<=cannbals){//食人族+食人族
+            if(!cannbals){
+                MonitorEnd();
+                return canGo;
+            }
+            max = cannbals-1;
+            min = 0;
+            x = rand() % (max - min + 1) + min;
+            pickup(queuingList[x]);
+
+            //食人族+食人族+食人族
+            if(!cannbals){
+                MonitorEnd();
+                return canGo;
+            }
+            max--;
+            x = rand() % (max - min + 1) + min;
+            pickup(queuingList[x]);
+            canGo=true;
+        }
+        else{//食人族+傳道士
+            if(!missionaries){
+                MonitorEnd();
+                return canGo;
+            }
+            max = total-1;
+            min = cannbals;
+            x = rand() % (max - min + 1) + min;
+            pickup(queuingList[x]);
+
+            //食人族+傳道士+傳道士
+            if(!missionaries){
+                MonitorEnd();
+                return canGo;
+            }
+            max--;
+            x = rand() % (max - min + 1) + min;
+            pickup(queuingList[x]);
+            canGo=true;
+
+        }
     }
     else{//第一個挑到傳道士
         max = total-1;
         min = cannbals;
         x = rand() % (max - min + 1) + min;
         pickup(queuingList[x]);
+
+        min = 1;
+        max = total;
+        x = rand() % (max - min + 1) + min;
+        if(x<=cannbals){//傳道士+食人族
+            if(!cannbals){
+                MonitorEnd();
+                return canGo;
+            }
+            max = cannbals-1;
+            min = 0;
+            x = rand() % (max - min + 1) + min;
+            pickup(queuingList[x]);
+
+            //傳道士+食人族+傳道士
+            if(!missionaries){
+                MonitorEnd();
+                return canGo;
+            }
+            max = total-1;
+            min = cannbals;
+            x = rand() % (max - min + 1) + min;
+            pickup(queuingList[x]);
+            canGo=true;
+        }
+        else{//傳道士+傳道士
+            if(!missionaries){
+                MonitorEnd();
+                return canGo;
+            }
+            max = total-1;
+            min = cannbals;
+            x = rand() % (max - min + 1) + min;
+            pickup(queuingList[x]);
+            
+            min = 1;
+            max = total;
+            x = rand() % (max - min + 1) + min;
+            if((x<=cannbals){//傳道士+傳道士+食人族
+                if(!cannbals){
+                    MonitorEnd();
+                    return canGo;
+                }
+                max = cannbals-1;
+                min = 0;
+                x = rand() % (max - min + 1) + min;
+                pickup(queuingList[x]);
+                canGo=true;
+            }
+            else{傳道士+傳道士+傳道士
+                if(!missionaries){
+                    MonitorEnd();
+                    return canGo;
+                }
+                max = total-1;
+                min = cannbals;
+                x = rand() % (max - min + 1) + min;
+                pickup(queuingList[x]);
+                canGo=true;
+            }
+        }
     }
 
     if(!canGo){
@@ -64,7 +175,10 @@ bool BoatPick(){
     return canGo;
 }
 
-pickup(Passenger *p){
+//暫時加入pickupList
+//排隊數-1
+//從list中排除
+pickup(Passenger *p){ 
     pickupList.push_back(p);
     if(p->isCannbal()){
         cannbals--;
@@ -89,6 +203,16 @@ pickupFailed(){
         pickupList.clear();
 }
 
+void baotOnBoard(){
+    pickupList[0]->signal();
+    pickupList[1]->signal();
+    pickupList[2]->signal();
+}
+boatOffBoard(){
+    pickupList[0]->signal();
+    pickupList[1]->signal();
+    pickupList[2]->signal();
+}
 mySort(vector<Passenger*>* v){
     if(*v[total-1]->isCannbal){
         swap(*v[total-1],*v[cannbals]);

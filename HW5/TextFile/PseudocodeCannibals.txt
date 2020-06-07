@@ -1,8 +1,14 @@
-while (1) {
-     Delay();               // take a rest 
-     CannibalArrives(...);  // register to cross the river 
-     // other stuffs 
-     // come back for another river crossing
+public:
+
+ThreadFunc(){}
+    while (1) {
+         Delay();               // take a rest 
+         CannibalArrives();  // register to cross the river
+         CannibalOnBoard();
+         CannibalOffBoard();
+         // other stuffs 
+         // come back for another river crossing
+    }
 }
 
 void CannibalArrives(){
@@ -12,5 +18,10 @@ void CannibalOnBoard(){
     M.onBoard(this);
 }
 void CannibalOffBoard(){
-    
+    M.offBoard(this);
 }
+}
+
+
+private:
+int index;

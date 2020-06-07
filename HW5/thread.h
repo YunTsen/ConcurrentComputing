@@ -1,27 +1,65 @@
 //------------------------------------------------------------------------
 // Filename:
-//     IncDec-mon.h
+//     IncDec-Thrd.h
 // PROGRAM DESCRIPTION
-//     Definition file for Counter Monitor class
+//     Definition file for Increment/Decrement thread classes
 //------------------------------------------------------------------------
 
-#ifndef _IncDec_Mon_H 
-#define _IncDec_Mon_H
+#ifndef Thread_H
+#define Thread_H
 
 #include "ThreadClass.h"
 
 //------------------------------------------------------------------------
-// BufferMonitor class definition
+// Inc/Dec thread class definition
 //------------------------------------------------------------------------
 
-class CounterMonitor : public Monitor
-{
-     public:
-          CounterMonitor(char* Name);   // constructor
-          int Increment();              // increment the counter
-          int Decrement();              // decrement the counter
-     private:
-          int counter;                  // internal counter
+class PassengerThread : public Thread {
+   public:
+    PassengerThread(int index);  // constructor
+    virtual bool isCannibal()=0;
+    int getIndex();
+   
+   protected:
+   void Arrives();
+    void OnBoard();
+    void OffBoard();
+
+   private:
+    virtual void ThreadFunc()=0;
+    int _index;
 };
+
+class CannThread : public PassengerThread {
+   public:
+    CannThread(int index);  // constructor
+    virtual bool isCannibal();
+
+   private:
+    virtual void ThreadFunc();
+};
+
+class MissThread : public PassengerThread {
+   public:
+    MissThread(int index);  // constructor
+    virtual bool isCannibal();
+
+   private:
+    virtual void ThreadFunc();
+};
+
+class BoatThread : public Thread {
+   public:
+    BoatThread();
+
+   private:
+     void ThreadFunc();
+     void BoatReady();
+     void BoatGo();
+     void Delay();
+     void BoatDone();
+};
+
+int getDelayTime();
 
 #endif

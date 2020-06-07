@@ -6,7 +6,7 @@ void ThreadFunc(){
      while(1){
         Delay();         // take a rest
         BoatReady(...);  // ready for the next round
-        while(!M.boatPick()){};
+        BoatGo();
         Delay();         // row the boat
         BoatDone(...);   // all people are on the other side
         // come back for another river crossing 
@@ -14,7 +14,15 @@ void ThreadFunc(){
 }
 
 void BoatReady(){
-    
+   while(!M.boatPick()){};
+}
+
+BoatGo(){
+   M.baotOnBoard();
+}
+
+BoatDone(){
+   M.boatOffBoard();
 }
 private:
 unsigned int load;

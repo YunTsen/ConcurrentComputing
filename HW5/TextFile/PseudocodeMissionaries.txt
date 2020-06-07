@@ -1,0 +1,24 @@
+while (1) {
+     Delay();                 // take a rest                 
+     MissionaryArrives(...);  // register to cross the river
+     MissionaryOnBoard();
+     MissionaryOffBoard();
+     // other stuffs 
+     // come back for another river crossing 
+}
+
+public:
+void MissionaryArrives(){
+    M.queue(this);
+}
+void MissionaryOnBoard(){
+    M.onBoard(this);
+}
+void MissionaryOffBoard(){
+    M.offBoard(this);
+}
+}
+
+
+private:
+int index;
