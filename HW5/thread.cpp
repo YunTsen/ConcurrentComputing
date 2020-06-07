@@ -28,6 +28,7 @@ int  PassengerThread::getIndex(){
 
 void PassengerThread::Arrives() {
     char buff[200];  //for standard output
+     RCM.passengerQueue(this);
     if(this->isCannibal()){
         sprintf(buff,"Cannibal %d arrives\n",this->getIndex());
         write(1,buff,strlen(buff));
@@ -36,7 +37,7 @@ void PassengerThread::Arrives() {
         sprintf(buff,"Missionary %d arrives\n",this->getIndex());
         write(1,buff,strlen(buff));
     }
-    RCM.passengerQueue(this);
+   
 }
 
 void PassengerThread::OnBoard() {
@@ -61,7 +62,7 @@ bool CannThread::isCannibal() {
 void CannThread::ThreadFunc() {
     Thread::ThreadFunc();
     while (1) { 
-        Delay();          // take a rest
+        //Delay();          // take a rest
         this->Arrives();  // register to cross the river
         this->OnBoard();
         this->OffBoard();
@@ -88,7 +89,7 @@ bool MissThread::isCannibal() {
 void MissThread::ThreadFunc() {
     Thread::ThreadFunc();
     while (1) {
-        Delay();          // take a rest
+        //Delay();          // take a rest
         this->Arrives();  // register to cross the river
         this->OnBoard();
         this->OffBoard();
