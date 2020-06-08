@@ -1,9 +1,11 @@
-//------------------------------------------------------------------------
-// Filename:
-//     IncDec-mon.cpp
-// PROGRAM DESCRIPTION
-//     Class implementation file for Counter Monitor class
-//------------------------------------------------------------------------
+// -----------------------------------------------------------
+// NAME : YunTsen Lo                         User ID: 108598056
+// DUE DATE : 06/08/2020
+// PROGRAM ASSIGNMENT 5
+// FILE NAME : boat-monitor.cpp
+// PROGRAM PURPOSE :
+//    Class implemention file for class RiverCrossingMonitor
+// -----------------------------------------------------------
 
 #include "boat-monitor.h"
 
@@ -14,12 +16,19 @@
 #include "ThreadClass.h"
 #include "thread.h"
 
-//------------------------------------------------------------------------
-// BufferMonitor::CounterMonitor()
-//      Constructor
-//------------------------------------------------------------------------
+ 
 extern Mutex buffMutex;
 
+// ----------------------------------------------------------- 
+// FUNCTION  RiverCrossingMonitor::RiverCrossingMonitor :                       
+//     constructor of class RiverCrossingMonitor                          
+// PARAMETER USAGE :                                           
+//    int Name: assign a name to this monitor
+//    int c: how many cannibals
+//    int m: how many missionaries
+//    int b: how many boatloads
+// FUNCTION CALLED : NONE         
+// -----------------------------------------------------------
 RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m, int b)
     : Monitor(Name, HOARE) {
     char buff[200];  //for standard output
@@ -33,7 +42,7 @@ RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m, int b)
     Condition *temCon;
     strstream *conditionName=new strstream;
     conditionName->seekp(0, ios::beg);
-
+    //initialize Conditions for cannibals to wait for getting on/offboard
     for (int i = 0; i < c; i++) {
         (*conditionName) << "C" << i << '\0';
         temCon = new Condition(conditionName->str());
@@ -41,6 +50,7 @@ RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m, int b)
         temCon = new Condition(conditionName->str());
         _cannibalsWait_off.push_back(temCon);
     }
+    //initialize Conditions for missionaries to wait for getting on/offboard
     for (int i = c; i < c+m; i++) {
         (*conditionName) << "M" << i << '\0';
         temCon = new Condition(conditionName->str());
@@ -50,27 +60,33 @@ RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m, int b)
     }
 }
 
-//------------------------------------------------------------------------
-// BufferMonitor::Increment()
-//      Monitor procedure Increment: increases the internal counter.
-//------------------------------------------------------------------------
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::passengerQueue :
+//     add passenger to queuing List
+// PARAMETER USAGE :
+//      PassengerThread *p: the passengerThread who wants to Queue
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 void RiverCrossingMonitor::passengerQueue(PassengerThread *p) {
     MonitorBegin();
     _queuingList.push_back(p);
     if (p->isCannibal()) {
         _cannibals++;
         _total++;
-        //mySort(&_queuingList);
-        swap(_queuingList[_total - 1], _queuingList[_cannibals - 1]);
+        swap(_queuingList[_total - 1], _queuingList[_cannibals - 1]);//arrange _queuingList
     } else {
         _missionaries++;
         _total++;
     }
-    //showList();
-    //_canPick->Signal();
     MonitorEnd();
 }
-
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::passengerOnBoard :
+//     passenger try to get onboard
+// PARAMETER USAGE :
+//      PassengerThread *p: the passengerThread who wants to get onboard
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 void RiverCrossingMonitor::passengerOnBoard(PassengerThread *p) {
     MonitorBegin();
     if (p->isCannibal())
@@ -79,6 +95,13 @@ void RiverCrossingMonitor::passengerOnBoard(PassengerThread *p) {
         _missionarisWait[p->getIndex()]->Wait();
     MonitorEnd();
 }
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::passengerOffBoard :
+//     passenger try to get offboard
+// PARAMETER USAGE :
+//      PassengerThread *p: the passengerThread who wants to get offboard
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 void RiverCrossingMonitor::passengerOffBoard(PassengerThread *p) {
     MonitorBegin();
     if (p->isCannibal())
@@ -87,6 +110,14 @@ void RiverCrossingMonitor::passengerOffBoard(PassengerThread *p) {
         _missionarisWait_off[p->getIndex()]->Wait();
     MonitorEnd();
 }
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::boatPick :
+//     boat tries to select passengers from _queuingList
+// PARAMETER USAGE : NONE
+// FUNCTION CALLED : 
+//      RiverCrossingMonitor::ListPickup(PassengerThread *)
+//      RiverCrossingMonitor::listPickupFailed()
+// -----------------------------------------------------------
 bool RiverCrossingMonitor::boatPick() {
     char buff[200];
     bool canGo = false;
@@ -234,13 +265,18 @@ bool RiverCrossingMonitor::boatPick() {
 
     return canGo;
 }
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::listPickup :
+//     put the selected passenger into _pickupLick
+// PARAMETER USAGE : NONE
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 void RiverCrossingMonitor::listPickup(PassengerThread *p, int x) {
     if (p->isCannibal()) {
         vector<PassengerThread*>::iterator it = _pickupList.begin();
         _pickupList.insert(it,p);
         _cannibals--;
         _total--;
-        //swap(pick_pickupList.size()-1);
     } else {
         _pickupList.push_back(p);
         _missionaries--;
@@ -248,7 +284,12 @@ void RiverCrossingMonitor::listPickup(PassengerThread *p, int x) {
     }
     _queuingList.erase(_queuingList.begin() + x);
 }
-
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::baotOnBoard :
+//     tell the selected passengers to get onboard
+// PARAMETER USAGE : NONE
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 void RiverCrossingMonitor::baotOnBoard() {
     MonitorBegin();
     for (int i = 0; i < 3; i++) {
@@ -259,8 +300,12 @@ void RiverCrossingMonitor::baotOnBoard() {
     }
     MonitorEnd();
 }
-
-
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::boatOffBoard :
+//     tell the selected passengers to get offboard
+// PARAMETER USAGE : NONE
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 void RiverCrossingMonitor::boatOffBoard() {
     MonitorBegin();
     for (int i = 0; i < 3; i++) {
@@ -273,10 +318,14 @@ void RiverCrossingMonitor::boatOffBoard() {
     _boatLoad++;
     MonitorEnd();
 }
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::listPickupFailed :
+//     select passengers failed,
+//  reassign passengers in _pickupList to _queuingList
+// PARAMETER USAGE : NONE
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 void RiverCrossingMonitor::listPickupFailed() {
-    char buff[200];
-    sprintf(buff, "pickList size:%d\n",_pickupList.size());
-    write(1, buff, strlen(buff));
     for (int i = 0; i < _pickupList.size(); i++) {
         _queuingList.push_back(_pickupList[i]);
         if (_pickupList[i]->isCannibal()) {
@@ -291,7 +340,12 @@ void RiverCrossingMonitor::listPickupFailed() {
     }
     _pickupList.clear();
 }
-
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::getBoatLoad :
+//     return current _boatLoad
+// PARAMETER USAGE : NONE
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 int RiverCrossingMonitor::getBoatLoad(){
     int b;
     MonitorBegin();
@@ -299,7 +353,12 @@ int RiverCrossingMonitor::getBoatLoad(){
     MonitorEnd();
     return b;
 }
-
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::showPickList :
+//     show selected passengers
+// PARAMETER USAGE : NONE
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 void RiverCrossingMonitor::showPickList(){
     char buff[200];
     if(_pickupList[2]->isCannibal()){
@@ -318,9 +377,13 @@ void RiverCrossingMonitor::showPickList(){
         write(1, buff, strlen(buff));
     }
 }
-
+// -----------------------------------------------------------
+// FUNCTION  RiverCrossingMonitor::showPickList :
+//     show selected passengers(stdout for boat)
+// PARAMETER USAGE : NONE
+// FUNCTION CALLED : NONE
+// -----------------------------------------------------------
 void RiverCrossingMonitor::boatPickList(char *buff){
-    //buffMutex.Lock();
     for(int i=0;i<3;i++){
         if(_pickupList[i]->isCannibal()){
             sprintf(buff+strlen(buff),"c%d", _pickupList[i]->getIndex());
@@ -331,10 +394,5 @@ void RiverCrossingMonitor::boatPickList(char *buff){
         if(i==2) continue;
         sprintf(buff+strlen(buff)," ,", _pickupList[i]->getIndex());
     }
-    //buffMutex.Unlock();
-}
-
-void RiverCrossingMonitor::endGame(){
-    
 }
 // end of IncDec-mon.cpp

@@ -63,8 +63,7 @@ class BoatThread : public Thread {
     void ThreadFunc();  //thread body
     void BoatReady();   //boat is ready to pick
     void BoatGo();      //boat finishes selecting passenger, ready to go
-    void Delay();
-    void BoatDone();    //ont boat load completes
+    void BoatDone();    //one boat load completes
     int _b;
 };
 
