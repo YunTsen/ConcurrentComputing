@@ -320,7 +320,7 @@ void RiverCrossingMonitor::showPickList(){
 }
 
 void RiverCrossingMonitor::boatPickList(char *buff){
-    buffMutex.Lock();
+    //buffMutex.Lock();
     for(int i=0;i<3;i++){
         if(_pickupList[i]->isCannibal()){
             sprintf(buff+strlen(buff),"c%d", _pickupList[i]->getIndex());
@@ -331,7 +331,7 @@ void RiverCrossingMonitor::boatPickList(char *buff){
         if(i==2) continue;
         sprintf(buff+strlen(buff)," ,", _pickupList[i]->getIndex());
     }
-    buffMutex.Unlock();
+    //buffMutex.Unlock();
 }
 
 void RiverCrossingMonitor::endGame(){

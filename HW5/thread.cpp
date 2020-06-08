@@ -1,9 +1,12 @@
-//------------------------------------------------------------------------
-// Filename:
-//     IncDec-Thrd.cpp
-// PROGRAM DESCRIPTION
-//     Class implementation file for Inc/Dec Thread class
-//------------------------------------------------------------------------
+// -----------------------------------------------------------
+// NAME : YunTsen Lo                         User ID: 108598056
+// DUE DATE : 06/08/2020
+// PROGRAM ASSIGNMENT 5
+// FILE NAME : thread.cpp
+// PROGRAM PURPOSE :
+//    Class implemention file for class PassengerThread &
+//          CannThread & MissThread & BoatThread
+// -----------------------------------------------------------
 
 #include <iostream>
 #include <string.h>
@@ -11,8 +14,9 @@
 #include "ThreadClass.h"
 #include "boat-monitor.h"
 
-// static data variables
+// static data variable
 RiverCrossingMonitor* PassengerThread::PassengerThread::RCM;
+//mutex locks for locking stdout
 Mutex buffMutex;
 
 //------------------------------------------------------------------------
@@ -141,13 +145,13 @@ void BoatThread::BoatReady(){
 void BoatThread::BoatGo(){
     char buff[200];
     PassengerThread::RCM->showPickList();
-    buffMutex.Lock();
+    //buffMutex.Lock();
     sprintf(buff,"***** Boat load (%d): Passenger list (", PassengerThread::RCM->getBoatLoad()+1);
-    buffMutex.Unlock();
+    //buffMutex.Unlock();
     PassengerThread::RCM->boatPickList(buff);
-    buffMutex.Lock();
+    //buffMutex.Lock();
     sprintf(buff+strlen(buff),")\n");
-    buffMutex.Unlock();
+    //buffMutex.Unlock();
     write(1,buff,strlen(buff));
     PassengerThread::RCM->baotOnBoard();
 }
