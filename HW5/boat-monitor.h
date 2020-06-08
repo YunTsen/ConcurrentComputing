@@ -26,8 +26,10 @@ class RiverCrossingMonitor : public Monitor {
     void listPickup(PassengerThread *p,int x);
     void baotOnBoard();
     void boatOffBoard();
-    void showList();
+    void showPickList();
+    void boatPickList(char *);
     int getBoatLoad();
+    void endGame();
 
    private:
     void listPickupFailed();

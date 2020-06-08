@@ -13,6 +13,7 @@
 
 // static data variables
 RiverCrossingMonitor* PassengerThread::PassengerThread::RCM;
+Mutex buffMutex;
 
 //------------------------------------------------------------------------
 // IncrementThread::IncrementThread()
@@ -30,11 +31,13 @@ void PassengerThread::Arrives() {
     char buff[200];  //for standard output
     PassengerThread::RCM->passengerQueue(this);
     if(this->isCannibal()){
-        sprintf(buff,"Cannibal %d arrives\n",this->getIndex());
+        indentation(buff);
+        sprintf(buff+strlen(buff),"Cannibal %d arrives\n",this->getIndex());
         write(1,buff,strlen(buff));
     }
     else{
-        sprintf(buff,"Missionary %d arrives\n",this->getIndex());
+        indentation(buff);
+        sprintf(buff+strlen(buff),"Missionary %d arrives\n",this->getIndex());
         write(1,buff,strlen(buff));
     }
 }
@@ -45,6 +48,13 @@ void PassengerThread::OnBoard() {
 
 void PassengerThread::OffBoard() {
     PassengerThread::RCM->passengerOffBoard(this);
+}
+
+void PassengerThread::indentation(char* buff) {
+    memset(buff, 0, strlen(buff));
+    for (int i = 0; i < this->_index; i++) {
+        sprintf(buff + strlen(buff), " ");
+    }
 }
 
 CannThread::CannThread(int index) : PassengerThread(index) {
@@ -61,11 +71,10 @@ bool CannThread::isCannibal() {
 void CannThread::ThreadFunc() {
     Thread::ThreadFunc();
     while (1) { 
-        //Delay();          // take a rest
+        Delay();          // take a rest
         this->Arrives();  // register to cross the river
         this->OnBoard();
         this->OffBoard();
-        // other stuffs
         // come back for another river crossing
     }
     Exit();
@@ -88,11 +97,10 @@ bool MissThread::isCannibal() {
 void MissThread::ThreadFunc() {
     Thread::ThreadFunc();
     while (1) {
-        //Delay();          // take a rest
+        Delay();          // take a rest
         this->Arrives();  // register to cross the river
         this->OnBoard();
         this->OffBoard();
-        // other stuffs
         // come back for another river crossing
     }
     Exit();
@@ -108,13 +116,16 @@ BoatThread::BoatThread(int b):_b(b) {
 void BoatThread::ThreadFunc() {
     Thread::ThreadFunc();
     while (1) {
-        //Delay();         // take a rest
+        Delay();         // take a rest
         BoatReady();  // ready for the next round
         BoatGo();
         Delay();        // row the boat
         BoatDone();  // all people are on the other side
         // come back for another river crossing
         if(PassengerThread::RCM->getBoatLoad()==_b){
+            char buff[200];
+            sprintf(buff,"MONITOR: %d crosses have been made.\nMONITOR: This river cross is closed indefinitely for renovation.\n",PassengerThread::RCM->getBoatLoad());
+            write(1,buff,strlen(buff));
             break;
         }
     }
@@ -128,6 +139,16 @@ void BoatThread::BoatReady(){
     while(!PassengerThread::RCM->boatPick()){};
 }
 void BoatThread::BoatGo(){
+    char buff[200];
+    PassengerThread::RCM->showPickList();
+    buffMutex.Lock();
+    sprintf(buff,"***** Boat load (%d): Passenger list (", PassengerThread::RCM->getBoatLoad()+1);
+    buffMutex.Unlock();
+    PassengerThread::RCM->boatPickList(buff);
+    buffMutex.Lock();
+    sprintf(buff+strlen(buff),")\n");
+    buffMutex.Unlock();
+    write(1,buff,strlen(buff));
     PassengerThread::RCM->baotOnBoard();
 }
 void BoatThread::Delay(){
