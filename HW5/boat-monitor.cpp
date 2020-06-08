@@ -38,7 +38,10 @@ RiverCrossingMonitor::RiverCrossingMonitor(char *Name, int c, int m, int b)
     _cannibals = 0;
     _missionaries = 0;
     _total = 0;
-
+    strstream *conditionName_=new strstream;
+    conditionName_->seekp(0, ios::beg);
+    (*conditionName_) << "canPick" << '\0';
+    _canPick=new Condition(conditionName_->str());
     Condition *temCon;
     strstream *conditionName=new strstream;
     conditionName->seekp(0, ios::beg);
@@ -78,6 +81,7 @@ void RiverCrossingMonitor::passengerQueue(PassengerThread *p) {
         _missionaries++;
         _total++;
     }
+    _canPick->Signal();
     MonitorEnd();
 }
 // -----------------------------------------------------------
