@@ -1,12 +1,16 @@
-//--------------------------------------------------------------------------
-// File 
-//    sort-thread.h
-// PROGRAM Description:
-//    class definition file for sorting thread and master thread 
-//--------------------------------------------------------------------------
+// -----------------------------------------------------------
+// NAME : YunTsen Lo                         User ID: 108598056
+// DUE DATE : 06/22/2020
+// PROGRAM ASSIGNMENT 6
+// FILE NAME : thread.h
+// PROGRAM PURPOSE :
+//    class definition file for prime number thread and master thread
+//    This program uses ThreadMentor's synchronous channels to
+//    implement the sieve program
+// -----------------------------------------------------------
 
-#ifndef _SORT_H 
-#define _SORT_H 
+#ifndef THREAD_H 
+#define THREAD_H
 
 #include <iostream>
 #include "ThreadClass.h"
@@ -14,20 +18,20 @@
 #define END_OF_DATA 1000 // end of input flag
 
 //-------------------------------------------------------------------------
-// SortThread Class
+// PrimeNumberThread Class definition
 //-------------------------------------------------------------------------
 
-class SortThread : public Thread
+class PrimeNumberThread : public Thread
 {
      public:
-          SortThread(int index, int threadID); // constructor and destructor
-          ~SortThread();
+          PrimeNumberThread(int index, int threadID); // constructor and destructor
+          ~PrimeNumberThread();
           SynOneToOneChannel *channel;
      private:
           void ThreadFunc();       // thread body
-          int  Index;              // index of the sort thread
-          void indentation(char* buff);
-          SortThread *neighbor;    // next sort thread
+          int  Index;              // index of the prime number thread
+          void indentation(char* buff);   // ouput format
+          PrimeNumberThread *neighbor;    // next prime number thread
 };
 
 //-------------------------------------------------------------------------
@@ -37,10 +41,10 @@ class SortThread : public Thread
 class MasterThread : public Thread
 {
      public:
-          MasterThread(int threadID,int n);
+          MasterThread(int threadID,int n);  //constructor
      private:
-          void ThreadFunc();
-          int _n;
+          void ThreadFunc();  //thread body
+          int _n; //the largest integer that the Master will send to thread P2
 };
 
-#endif // _SORT_H
+#endif // THREAD_H
