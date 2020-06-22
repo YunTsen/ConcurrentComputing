@@ -1,0 +1,63 @@
+Q1:The logic of your program?
+    A Synchronous channel is set up between prime numver thread i and i + 1, 
+    so the pipeline looks like:
+    master -- Thread 1 -- .. -- Thread i --.. -- Thread N
+
+     -MasterThread: pumps a sequence of integers from 2 to n into the 
+     synchronous channel to P2.
+     -PrimeNumberThread:
+     If the coming number "k" is a multiple of this->Index,
+     k is not a prime number. Pi ignores k and waits for the next number from
+     its predecessor through the incoming synchronous channel. 
+     If k is not a multiple of i, send it to its successor
+     or create one successor if there is not.
+
+Q2: Why does your program work? 
+    Since channels are the only objects that are shared by threads.
+    This implies that variables will not be accessed concurrently by multiple
+    threads, and, consequently, no mutual exclusion is required.
+
+Q3: The meaning, initial value and the use of each variable. 
+    - int MasterThread::_n: the largest integer that the Master 
+    will send to thread P2, received from command line
+    - int PrimeNumberThread::Index: The index and also the prime number that 
+    is "memorizes" by a thread
+    -  PrimeNumberThread PrimeNumberThread::*neighbor: the accessor of this
+    thread. It is initialized as NULL until needed.
+    - SynOneToOneChannel PrimeNumberThread::*channel: channel between two
+    threads.
+    - int Primes[]: global array that is used to save all the primes
+
+Q4:Can we use asynchronous channels to solve this problem?
+    Yes. A rendezvous is not required. 
+
+Q5:If the last thread in the chain receives a number larger than the one
+this thread memorized, then the incoming number must be a prime number.
+Why is this true? Prove this fact with a convincing argument.
+    A number is prime, if none of the smaller prime numbers divides it.
+     Since we iterate over the prime numbers in order, we already discard 
+     all numbers, who are divisible by at least one of the prime numbers, 
+     as divisible. Hence if we got a number and it is not divisible by
+     all other smaller prime numbers, then it has to be prime.
+
+Q6:Explain how you can fill the array Primes elements in a consecutive way.
+    When thread SortThread receives END_OF_DATA, it breaks from the loop,
+    prints out the number it memorizes, passes END_OF_DATA to its neighbor,
+    and waits for its neighbor to complete. Since a thread with larger prime
+    only receives END_OF_DATA after its predecessor save its number to the
+    array Primes[], Primes[] is filled in a consecutive way.
+                                                                                |
+Q7:You do not need a mutex to protect the global array Primes when a
+prime thread is saving its memorized prime number?
+    Since channels are the only objects that are shared by threads.
+    This implies that variables will not be accessed concurrently by multiple
+    threads, and, consequently, no mutual exclusion is required.
+
+Q8: You must terminate your program gracefully. More precisely,
+The last three output lines must be printed by Master.
+    After sending END_OF_DATA to the first PrimeNumberThread(P2), the master
+    thread waits until the first PrimeNumberThread joins. While
+    PrimeNumberThreads waits for its successor to join, it means the master
+    thread will also wait for all grand childrens finishes their work.
+    Then, it print out the last three output lines. Therefore, the program
+    is terminated gracefully.

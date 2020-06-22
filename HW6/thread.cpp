@@ -8,11 +8,8 @@
 // -----------------------------------------------------------
 
 #include "thread.h"
-
 #include <string.h>
-
 #include <iostream>
-
 #include "ThreadClass.h"
 
 //global data item
@@ -52,6 +49,7 @@ PrimeNumberThread::PrimeNumberThread(int index, int threadID):Index(index) {
 // ----------------------------------------------------------- 
 PrimeNumberThread::~PrimeNumberThread() {
     delete channel;
+    delete neighbor;
 }
 
 // ----------------------------------------------------------- 
@@ -131,7 +129,7 @@ void PrimeNumberThread::indentation(char* buff) {
 
 // -----------------------------------------------------------
 // FUNCTION  MasterThread::MasterThread :
-//     handles the needed indentaion for PrimeNumberThread
+//     constructor of class MasterThread
 // PARAMETER USAGE :
 //      int threadID: user-defined ID for channel declaration
 //      int n: the largest integer to send to thread P2
@@ -189,6 +187,8 @@ void MasterThread::ThreadFunc() {
 
     sprintf(buff, "Master terminates\n");
     write(1, buff, strlen(buff));
+
+    delete firstPrimeNumberThread;
     Exit();
 }
 
