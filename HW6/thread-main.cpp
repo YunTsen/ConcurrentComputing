@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
 
      // wait for child threads
      masterThread->Join();
+     delete masterThread;
 
      Exit();
 
