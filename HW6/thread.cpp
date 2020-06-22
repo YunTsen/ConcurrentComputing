@@ -1,135 +1,173 @@
 //------------------------------------------------------------------------
-// Filename: 
+// Filename:
 //    sort-thread.cpp
 // PROGRAM DESCRIPTION
 //    Implementation of sorting thread and master thread
 //------------------------------------------------------------------------
 
-#include <iostream>
-#include "ThreadClass.h"
 #include "thread.h"
+
+#include <string.h>
+
+#include <iostream>
+
+#include "ThreadClass.h"
 
 using namespace std;
 // external data variable
 
-extern SortThread *firstSortThread;  // first sorting thread
-
+extern SortThread* firstSortThread;  // first sorting thread
+int Primes[101] = {0};
+Mutex mutex;
 //------------------------------------------------------------------------
 // SortThread::SortThread()
-//    constructor    
+//    constructor
 //------------------------------------------------------------------------
 
-SortThread::SortThread(int index, int threadID) 
-{
-     ThreadName.seekp(0, ios::beg);
-     Index = index;
-     ThreadName << "Sort" << index << ends;
+SortThread::SortThread(int index, int threadID):Index(index) {
+    char buff[200];  //for standard output
+     indentation(buff);
+    sprintf(buff+strlen(buff), "P%d starts and memorizes %d\n", index, index);
+    write(1, buff, strlen(buff));
 
-     UserDefinedThreadID = threadID;
+    ThreadName.seekp(0, ios::beg);
+    ThreadName << "Sort" << index << ends;
 
-     neighbor = NULL;
-     Number = NOT_DEFINED;
+    UserDefinedThreadID = threadID;
 
-     strstream ChannelName;
-     ChannelName << "Channel" << index - 1 << "-" << index << ends;
-     channel = new SynOneToOneChannel(ChannelName.str(), threadID - 1, threadID);
+    neighbor = NULL;
+
+    strstream ChannelName;
+    ChannelName << "Channel" << index - 1 << "-" << index << ends;
+    channel = new SynOneToOneChannel(ChannelName.str(), threadID - 1, threadID);
 }
 
 //------------------------------------------------------------------------
 // SortThread::SortThread()
-//    destructor    
+//    destructor
 //------------------------------------------------------------------------
 
-SortThread::~SortThread()
-{
-     delete channel;
+SortThread::~SortThread() {
+    delete channel;
 }
 
 //------------------------------------------------------------------------
 // SortThread::ThreadFunc()
 //------------------------------------------------------------------------
 
-void SortThread::ThreadFunc()
-{
-     Thread::ThreadFunc();
-     int number;
-     int tmpNum;
-     Thread_t self = GetID();
+void SortThread::ThreadFunc() {
+    Thread::ThreadFunc();
+    int number;
+    char buff[200];  //for standard output
+    Thread_t self = GetID();
 
-     while(true) {
-          channel->Receive(&number, sizeof(int)); // get next number
-          if (number == END_OF_DATA)              // end of data?
-               break;
-          /*if (Number == NOT_DEFINED)              // first number?
-               Number = number;                   // yes, memorize it
-          else {                                  // all subsequent numbers
-               if (number >= Number) 
-                    tmpNum = number;              // pass 'number' down
-               else {
-                    tmpNum = Number;              // pass the saved number
-                    Number = number;              // and memorize the new one
-               }
-               if (neighbor == NULL){              // if I don't have a neighbor
-                    neighbor = new SortThread(Index + 1, UserDefinedThreadID + 1);
-                    neighbor->Begin();            // create one, run it
-               }                                  // and pass the number
-               neighbor->channel->Send(&tmpNum, sizeof(int));
-          }*/
-          if(number%Index!=0){
-               if(neighbor== NULL){
-                    neighbor = new SortThread(number, UserDefinedThreadID + 1);
-                    neighbor->Begin();
-               }
-               neighbor->channel->Send(&number, sizeof(int));
-          }
-     }
+    while (true) {
+        channel->Receive(&number, sizeof(int));  // get next number
+        if (number == END_OF_DATA) {             // end of data?
+            mutex.Lock();
+            indentation(buff);
+            sprintf(buff + strlen(buff), "P%d receives END \n", Index);
+            write(1, buff, strlen(buff));
+            mutex.Unlock();
 
-     cout << ThreadName.str()<< " keeps --> " << Number << endl;
-     // just received END-OF-DATA, pass it to my neighbor
-     if (neighbor != NULL) {
-          neighbor->channel->Send(&number, sizeof(int));
-          neighbor->Join();
-     }
-     Exit();
+            break;
+        } else {
+            mutex.Lock();
+            indentation(buff);
+            sprintf(buff + strlen(buff), "P%d receives %d\n", Index, number);
+            write(1, buff, strlen(buff));
+            mutex.Unlock();
+        }
+        if (number % Index != 0) {
+            if (neighbor == NULL) {
+                mutex.Lock();
+                indentation(buff);
+                sprintf(buff + strlen(buff), "P%d creates %d\n", Index, number);
+                write(1, buff, strlen(buff));
+                mutex.Unlock();
+
+                neighbor = new SortThread(number, UserDefinedThreadID + 1);
+                neighbor->Begin();
+            }
+            neighbor->channel->Send(&number, sizeof(int));
+        } else {
+            mutex.Lock();
+            indentation(buff);
+            sprintf(buff + strlen(buff), "P%d ignores %d\n", Index, number);
+            write(1, buff, strlen(buff));
+            mutex.Unlock();
+        }
+    }
+
+    //cout << Index<< " ";
+    Primes[Index] = Index;
+    // just received END-OF-DATA, pass it to my neighbor
+    if (neighbor != NULL) {
+        neighbor->channel->Send(&number, sizeof(int));
+        neighbor->Join();
+    }
+    Exit();
 }
 
+void SortThread::indentation(char* buff) {
+    memset(buff, 0, strlen(buff));
+    for (int i = 0; i < this->Index; i++) {
+        sprintf(buff + strlen(buff), " ");
+    }
+}
 //------------------------------------------------------------------------
 // MasterThread::MasterThread()
-//    constructor    
+//    constructor
 //------------------------------------------------------------------------
 
-MasterThread::MasterThread(int threadID, int n):_n(n)
-{
-     UserDefinedThreadID = threadID;
-     ThreadName.seekp(0, ios::beg);
-     ThreadName << "Master" << ends;
+MasterThread::MasterThread(int threadID, int n) : _n(n) {
+    char buff[200];  //for standard output
+    sprintf(buff, "Master starts\n");
+    write(1, buff, strlen(buff));
+
+    UserDefinedThreadID = threadID;
+    ThreadName.seekp(0, ios::beg);
+    ThreadName << "Master" << ends;
 }
 
 //------------------------------------------------------------------------
 // MasterThread::ThreadFunc()
 //------------------------------------------------------------------------
 
-void MasterThread::ThreadFunc()
-{
-     Thread::ThreadFunc();
-     int input;
+void MasterThread::ThreadFunc() {
+    Thread::ThreadFunc();
+    int input;
+    char buff[200];  //for standard output
 
-     for(int i=3;i<_n;i++){
-          firstSortThread->channel->Send(&i,sizeof(int));
-     }
-     /*cout << "Please input all non-negative integers ended by -1: " << endl;
-     do {        
-          cin >> input;
-          if (input == END_OF_DATA)
-               break;
-          else
-               firstSortThread->channel->Send(&input, sizeof(int));
-     } while (input != END_OF_DATA);*/
+    firstSortThread = new SortThread(2, 2);  // first sorting thread
+    firstSortThread->Begin();
 
-     // finally send END-OF-DATA
-     input = END_OF_DATA;
-     firstSortThread->channel->Send(&input, sizeof(int));
-     Exit();
+    for (int i = 3; i < _n + 1; i++) {
+        sprintf(buff, "Master sends %d to P2\n", i);
+        write(1, buff, strlen(buff));
+        firstSortThread->channel->Send(&i, sizeof(int));
+    }
+
+    // finally send END-OF-DATA
+    sprintf(buff, "Master sends END\n");
+    write(1, buff, strlen(buff));
+    input = END_OF_DATA;
+    firstSortThread->channel->Send(&input, sizeof(int));
+    firstSortThread->Join();
+
+    sprintf(buff, "Master prints the complete result:\n");
+    write(1, buff, strlen(buff));
+    for (int i = 0; i < 101; i++) {
+        if (Primes[i] == 0) continue;
+        sprintf(buff, "%3d", Primes[i]);
+        write(1, buff, strlen(buff));
+    }
+    sprintf(buff, "\n");
+    write(1, buff, strlen(buff));
+
+    sprintf(buff, "Master terminates\n");
+    write(1, buff, strlen(buff));
+    Exit();
 }
 
 // end of Sieve.cpp

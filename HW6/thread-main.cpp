@@ -22,7 +22,7 @@
 
 // global data variables
 SortThread *firstSortThread;        // first sorting thread 
-int Primes[300]; 
+
 //-----------------------------------------------------------------------
 // main program
 //-----------------------------------------------------------------------
@@ -31,9 +31,6 @@ int main(int argc, char *argv[])
 {    int n = (argc<2) ? 30: atoi(argv[1]);
 
      MasterThread *masterThread;
-
-     firstSortThread = new SortThread(2, 2);    // first sorting thread 
-     firstSortThread->Begin();
 
      masterThread = new MasterThread(1,n);
      masterThread->Begin();

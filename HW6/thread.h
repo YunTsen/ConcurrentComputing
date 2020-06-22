@@ -11,10 +11,7 @@
 #include <iostream>
 #include "ThreadClass.h"
 
-// const data variable
-
-const int NOT_DEFINED  = -2;
-const int END_OF_DATA  = -1;  // end of input flag
+#define END_OF_DATA 1000 // end of input flag
 
 //-------------------------------------------------------------------------
 // SortThread Class
@@ -29,7 +26,7 @@ class SortThread : public Thread
      private:
           void ThreadFunc();       // thread body
           int  Index;              // index of the sort thread
-          int  Number;             // memorize the first received number
+          void indentation(char* buff);
           SortThread *neighbor;    // next sort thread
 };
 

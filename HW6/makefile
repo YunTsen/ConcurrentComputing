@@ -7,7 +7,7 @@ TMLIB    = ../ThreadMentor/Visual/libthreadclass.a
 TMLIB_NV    = ../ThreadMentor/NoVisual/libthreadclass.a
 
 OBJ_FILE = obj/thread.o obj/thread-main.o 
-EXE_FILE = bin/prog
+EXE_FILE = bin/prog6
 
 ${EXE_FILE}: ${OBJ_FILE}
 	${CC} ${FLAGS}  -o ${EXE_FILE}  ${OBJ_FILE} ${TMLIB} -lpthread
